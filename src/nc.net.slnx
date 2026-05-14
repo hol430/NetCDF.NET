@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="NetCDF.NET.Tests/NetCDF.NET.Tests.csproj" />
+  <Project Path="NetCDF.NET/NetCDF.NET.csproj" />
+</Solution>
