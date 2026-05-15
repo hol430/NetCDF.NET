@@ -16,35 +16,39 @@ public sealed class ErrorBehaviorTests
     public void NcInqDimid_InvalidName_ReturnsError()
     {
         using var temp = new TempFile();
-        int ncid = -1;
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
 
-        try
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_create(temp.FilePath, CreateMode.NC_NETCDF4, out ncid), "nc_create");
-            int status = Native.nc_inq_dimid(ncid, "does_not_exist", out _);
-            Assert.NotEqual(InteropTestCommon.NcNoErr, status);
-        }
-        finally
-        {
-            InteropTestCommon.CloseIfOpen(ref ncid);
-        }
+        int status = Native.nc_inq_dimid(hnd.Id, "does_not_exist", out _);
+        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
     }
 
     [Fact]
     public void NcInqVarid_InvalidName_ReturnsError()
     {
         using var temp = new TempFile();
-        int ncid = -1;
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
 
-        try
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_create(temp.FilePath, CreateMode.NC_NETCDF4, out ncid), "nc_create");
-            int status = Native.nc_inq_varid(ncid, "does_not_exist", out _);
-            Assert.NotEqual(InteropTestCommon.NcNoErr, status);
-        }
-        finally
-        {
-            InteropTestCommon.CloseIfOpen(ref ncid);
-        }
+        int status = Native.nc_inq_varid(hnd.Id, "does_not_exist", out _);
+        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+    }
+
+    [Fact]
+    public void NcInqVartype_InvalidVarId_ReturnsError()
+    {
+        using var temp = new TempFile();
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+
+        int status = Native.nc_inq_vartype(hnd.Id, -1, out _);
+        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+    }
+
+    [Fact]
+    public void NcInqDimlen_InvalidDimId_ReturnsError()
+    {
+        using var temp = new TempFile();
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+
+        int status = Native.nc_inq_dimlen(hnd.Id, -1, out _);
+        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
     }
 }

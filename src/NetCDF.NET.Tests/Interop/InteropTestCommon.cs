@@ -18,13 +18,4 @@ internal static class InteropTestCommon
         string message = Native.nc_strerror(status);
         throw new XunitException($"{operation} failed with status {status}: {message}");
     }
-
-    internal static void CloseIfOpen(ref int ncid)
-    {
-        if (ncid >= 0)
-        {
-            _ = Native.nc_close(ncid);
-            ncid = -1;
-        }
-    }
 }
