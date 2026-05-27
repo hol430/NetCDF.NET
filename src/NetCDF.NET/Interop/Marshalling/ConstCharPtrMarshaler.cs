@@ -1,7 +1,7 @@
 using System.Buffers;
 using System.Runtime.InteropServices;
 
-namespace NC.Net.Interop.Marshalling;
+namespace NetCDF.Interop.Marshalling;
 
 // From https://stackoverflow.com/questions/6300093/why-cant-i-return-a-char-string-from-c-to-c-sharp-in-a-release-build
 class ConstCharPtrMarshaler : ICustomMarshaler

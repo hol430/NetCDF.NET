@@ -1,15 +1,22 @@
 using System.Runtime.InteropServices;
 using System.Text;
-using NC.Net.Interop.Marshalling;
+using NetCDF.Interop.Marshalling;
 
 using MPI_Comm = System.IntPtr;
 using MPI_Info = System.IntPtr;
 
-namespace NC.Net.Interop;
+namespace NetCDF.Interop;
 
 public static partial class Native
 {
     private const string library = "netcdf";
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NcVlen
+    {
+        public nuint len;
+        public IntPtr p;
+    }
 
     // https://github.com/NickHumphries/C-sharp-Interface-to-netCDF
     // netCDF: doi:10.5065/D6H70CW6 https://doi.org/10.5065/D6H70CW6
@@ -77,7 +84,7 @@ public static partial class Native
 
     /// <summary>Learn the path used to open/create the file.</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    private static extern int nc_inq_path(int ncid, out IntPtr pathlen, [In, Out] byte[]? path);
+    public static extern int nc_inq_path(int ncid, out IntPtr pathlen, [In, Out] byte[]? path);
 
     /// <summary>
     /// Inquire about a type.
@@ -103,7 +110,7 @@ public static partial class Native
     /// be used to malloc space for the data, no matter what the type.</param>
     /// </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_inq_type(int ncid, NCType type, StringBuilder name, out nuint size);
+    public static extern int nc_inq_type(int ncid, NCType type, [In, Out] byte[]? name, out nuint size);
 
     /// <summary>Open an existing netCDF file.</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
@@ -123,11 +130,11 @@ public static partial class Native
 
     /// <summary>Open an existing netCDF file for parallel I/O.</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    private static extern int nc_open_par(string path, OpenMode omode, MPI_Comm comm, MPI_Info info, out int ncidp);
+    public static extern int nc_open_par(string path, OpenMode omode, MPI_Comm comm, MPI_Info info, out int ncidp);
 
     /// <summary>Create a netCDF file for parallel I/O.</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    private static extern int nc_create_par(string path, CreateMode cmode, MPI_Comm comm, MPI_Info info, out int ncidp);
+    public static extern int nc_create_par(string path, CreateMode cmode, MPI_Comm comm, MPI_Info info, out int ncidp);
 
     /// <summary>
     /// Change the parallel access of a variable from independent to collective
@@ -188,7 +195,7 @@ public static partial class Native
 
     /// <summary>Find out the name of a dimension.</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    private static extern int nc_inq_dimname(int ncid, int dimid, [In, Out] byte[] name);
+    public static extern int nc_inq_dimname(int ncid, int dimid, [In, Out] byte[] name);
 
     /// <summary>Find the number of dimensions.</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
@@ -305,46 +312,46 @@ public static partial class Native
 
     #region get_var1
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_text(int ncid, int varid, IntPtr[] index, out byte ip);
+    public static extern int nc_get_var1_text(int ncid, int varid, nuint[] index, out byte ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_schar(int ncid, int varid, IntPtr[] index, out sbyte ip);
+    public static extern int nc_get_var1_schar(int ncid, int varid, nuint[] index, out sbyte ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_uchar(int ncid, int varid, IntPtr[] index, out byte ip);
+    public static extern int nc_get_var1_uchar(int ncid, int varid, nuint[] index, out byte ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_short(int ncid, int varid, IntPtr[] index, out short ip);
+    public static extern int nc_get_var1_short(int ncid, int varid, nuint[] index, out short ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_int(int ncid, int varid, IntPtr[] index, out int ip);
+    public static extern int nc_get_var1_int(int ncid, int varid, nuint[] index, out int ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_long(int ncid, int varid, IntPtr[] index, out long ip);
+    public static extern int nc_get_var1_long(int ncid, int varid, nuint[] index, out long ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_float(int ncid, int varid, IntPtr[] index, out float ip);
+    public static extern int nc_get_var1_float(int ncid, int varid, nuint[] index, out float ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_double(int ncid, int varid, IntPtr[] index, out double ip);
+    public static extern int nc_get_var1_double(int ncid, int varid, nuint[] index, out double ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_ubyte(int ncid, int varid, IntPtr[] index, out byte ip);
+    public static extern int nc_get_var1_ubyte(int ncid, int varid, nuint[] index, out byte ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_ushort(int ncid, int varid, IntPtr[] index, out ushort ip);
+    public static extern int nc_get_var1_ushort(int ncid, int varid, nuint[] index, out ushort ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_uint(int ncid, int varid, IntPtr[] index, out uint ip);
+    public static extern int nc_get_var1_uint(int ncid, int varid, nuint[] index, out uint ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_longlong(int ncid, int varid, IntPtr[] index, out long ip);
+    public static extern int nc_get_var1_longlong(int ncid, int varid, nuint[] index, out long ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_ulonglong(int ncid, int varid, IntPtr[] index, out ulong ip);
+    public static extern int nc_get_var1_ulonglong(int ncid, int varid, nuint[] index, out ulong ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_var1_string(int ncid, int varid, IntPtr[] index, IntPtr[] ip);
+    public static extern int nc_get_var1_string(int ncid, int varid, nuint[] index, IntPtr[] ip);
     #endregion
 
     #region get_vara
@@ -388,7 +395,7 @@ public static partial class Native
     public static extern int nc_get_vara_ulonglong(int ncid, int varid, IntPtr[] start, IntPtr[] count, ulong[] ip);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    private static extern int nc_get_vara_string(int ncid, int varid, IntPtr[] start, IntPtr[] count, IntPtr[] ip);
+    public static extern int nc_get_vara_string(int ncid, int varid, IntPtr[] start, IntPtr[] count, IntPtr[] ip);
     #endregion
 
     #region get_vars
@@ -439,10 +446,10 @@ public static partial class Native
     public static extern int nc_inq_varid(int ncid, string name, out int varidp);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    private static extern int nc_inq_var(int ncid, int varid, byte[]? name, out NCType type, out int ndims, int[] dimids, out int natts);
+    public static extern int nc_inq_var(int ncid, int varid, byte[]? name, out NCType type, out int ndims, int[] dimids, out int natts);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    private static extern int nc_inq_varname(int ncid, int varid, byte[]? name);
+    public static extern int nc_inq_varname(int ncid, int varid, byte[]? name);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
     public static extern int nc_inq_vartype(int ncid, int varid, out NCType xtypep);
@@ -535,46 +542,46 @@ public static partial class Native
 
     #region put_var1
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_text(int ncid, int varid, IntPtr[] index, byte op);
+    public static extern int nc_put_var1_text(int ncid, int varid, nuint[] index, ref byte op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_schar(int ncid, int varid, IntPtr[] index, sbyte op);
+    public static extern int nc_put_var1_schar(int ncid, int varid, nuint[] index, ref sbyte op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_uchar(int ncid, int varid, IntPtr[] index, byte op);
+    public static extern int nc_put_var1_uchar(int ncid, int varid, nuint[] index, ref byte op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_short(int ncid, int varid, IntPtr[] index, short op);
+    public static extern int nc_put_var1_short(int ncid, int varid, nuint[] index, ref short op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_int(int ncid, int varid, IntPtr[] index, int op);
+    public static extern int nc_put_var1_int(int ncid, int varid, nuint[] index, ref int op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_long(int ncid, int varid, IntPtr[] index, long op);
+    public static extern int nc_put_var1_long(int ncid, int varid, nuint[] index, ref long op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_float(int ncid, int varid, IntPtr[] index, float op);
+    public static extern int nc_put_var1_float(int ncid, int varid, nuint[] index, ref float op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_double(int ncid, int varid, IntPtr[] index, double op);
+    public static extern int nc_put_var1_double(int ncid, int varid, nuint[] index, ref double op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_ubyte(int ncid, int varid, IntPtr[] index, byte op);
+    public static extern int nc_put_var1_ubyte(int ncid, int varid, nuint[] index, ref byte op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_ushort(int ncid, int varid, IntPtr[] index, ushort op);
+    public static extern int nc_put_var1_ushort(int ncid, int varid, nuint[] index, ref ushort op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_uint(int ncid, int varid, IntPtr[] index, uint op);
+    public static extern int nc_put_var1_uint(int ncid, int varid, nuint[] index, ref uint op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_longlong(int ncid, int varid, IntPtr[] index, long op);
+    public static extern int nc_put_var1_longlong(int ncid, int varid, nuint[] index, ref long op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_ulonglong(int ncid, int varid, IntPtr[] index, ulong op);
+    public static extern int nc_put_var1_ulonglong(int ncid, int varid, nuint[] index, ref ulong op);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_var1_string(int ncid, int varid, IntPtr[] index, string op);
+    public static extern int nc_put_var1_string(int ncid, int varid, nuint[] index, string op);
     #endregion
 
     #region put_vara
@@ -675,7 +682,7 @@ public static partial class Native
     public static extern int nc_inq_attid(int ncid, int varid, string name, out int idp);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    private static extern int nc_inq_attname(int ncid, int varid, int attnum, byte[]? name);
+    public static extern int nc_inq_attname(int ncid, int varid, int attnum, byte[]? name);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
     public static extern int nc_inq_natts(int ncid, out int ngatts);
@@ -691,7 +698,7 @@ public static partial class Native
 
     #region Getting Attributes
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    private static extern int nc_get_att_text(int ncid, int varid, string name, byte[] data);
+    public static extern int nc_get_att_text(int ncid, int varid, string name, byte[] data);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
     public static extern int nc_get_att_schar(int ncid, int varid, string name, sbyte[] value);
@@ -771,7 +778,7 @@ public static partial class Native
     public static extern int nc_put_att_ulonglong(int ncid, int varid, string name, NCType type, nuint len, ulong[] value);
 
     [DllImport(library, CallingConvention=CallingConvention.Cdecl)]
-    private static extern int nc_put_att_string(int ncid, int varid, string name, nuint len, string[] tp);
+    public static extern int nc_put_att_string(int ncid, int varid, string name, nuint len, string[] tp);
     #endregion
 
     #region Copying, Deleting and Renaming Attributes
@@ -856,8 +863,8 @@ public static partial class Native
 
     #region User-Defined Types
     /// <summary> Get the name and size of a type. </summary>
-    [DllImport(library, EntryPoint = "nc_inq_type", CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_inq_type_untested(int ncid, NCType xtype, StringBuilder name, out nuint size);
+    [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+    public static extern int nc_inq_type(int ncid, NCType xtype, StringBuilder name, out nuint size);
 
     /// <summary> Are two types equal? </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
@@ -866,10 +873,6 @@ public static partial class Native
     /// <summary> Get the id of a type from the name. </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
     public static extern int nc_inq_typeid(int ncid, string name, out NCType typeidp);
-
-    /// <summary> Find all user-defined types for a location. This finds all user-defined types in a group. </summary>
-    [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_inq_typeids(int ncid, out int ntypes, out int typeids);
 
     /// <summary> Find out about a user defined type. </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
@@ -885,9 +888,9 @@ public static partial class Native
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
     public static extern int nc_insert_compound(int ncid, NCType xtype, string name, int offset, NCType field_typeid);
 
-    /// <summary> Insert a named array into a compound type. </summary>
+    /// <summary>Insert a named array into a compound type (array dims form).</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_insert_array_compound(int ncid, NCType xtype, string name, int offset, NCType field_typeid, int ndims, int dim_sizes);
+    public static extern int nc_insert_array_compound(int ncid, NCType xtype, string name, int offset, NCType field_typeid, int ndims, int[] dim_sizes);
 
     /// <summary> Get the name, size, and number of fields in a compound type. </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
@@ -907,7 +910,7 @@ public static partial class Native
 
     /// <summary> Given the xtype and the fieldid, get all info about it. </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_inq_compound_field(int ncid, NCType xtype, int fieldid, StringBuilder name, out int offsetp, out NCType field_typeidp, out int ndimsp, out int dim_sizesp);
+    public static extern int nc_inq_compound_field(int ncid, NCType xtype, int fieldid, StringBuilder name, out int offsetp, out NCType field_typeidp, out int ndimsp, [Out] int[]? dim_sizesp);
 
     /// <summary> Given the typeid and the fieldid, get the name. </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
@@ -931,7 +934,7 @@ public static partial class Native
 
     /// <summary> Given the xtype and the fieldid, get the sizes of dimensions for that field. User must have allocated storage for the dim_sizes. </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_inq_compound_fielddim_sizes(int ncid, NCType xtype, int fieldid, out int dim_sizes);
+    public static extern int nc_inq_compound_fielddim_sizes(int ncid, NCType xtype, int fieldid, [Out] int[] dim_sizes);
     #endregion
 
     #region Enum types
@@ -945,7 +948,7 @@ public static partial class Native
 
     /// <summary>Insert a named value into an enum type.</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_insert_enum(int ncid, NCType xtype, string name, object value);
+    public static extern int nc_insert_enum(int ncid, NCType xtype, string name, ref int value);
 
     /// <summary>Get information about an enum type: its name, base type and the number of members defined. </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
@@ -953,7 +956,7 @@ public static partial class Native
 
     /// <summary>Get information about an enum member</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_inq_enum_member(int ncid, NCType xtype, int idx, string name, out object value);
+    public static extern int nc_inq_enum_member(int ncid, NCType xtype, int idx, [In, Out] byte[] name, out int value);
 
     /// <summary>Get enum name from enum value. Name size will be <= NC_MAX_NAME.</summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
@@ -970,18 +973,18 @@ public static partial class Native
     public static extern int nc_inq_vlen(int ncid, NCType xtype, StringBuilder name, out IntPtr datum_sizep, out NCType base_NCTypep);
 
     /// <summary> When you read VLEN type the library will actually allocate the storage space for the data. This storage space must be freed, so pass the pointer back to this function, when you're done with the data, and it will free the vlen memory. </summary>
-    //[DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    //public static extern int nc_free_vlen(nc_vlen_t* vl);
+    [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+    public static extern int nc_free_vlen(ref NcVlen vl);
 
-    //[DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    //public static extern int nc_free_vlens(int len, nc_vlen_t vlens[]);
+    [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+    public static extern int nc_free_vlens(nuint len, [In, Out] NcVlen[] vlens);
 
     /// <summary> Put or get one element in a vlen array. </summary>
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_put_vlen_element(int ncid, int typeid1, out object vlen_element, IntPtr len, object data);
+    public static extern int nc_put_vlen_element(int ncid, int typeid1, ref NcVlen vlen_element, nuint len, IntPtr data);
 
     [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int nc_get_vlen_element(int ncid, int typeid1, object vlen_element, out IntPtr len, out object data);
+    public static extern int nc_get_vlen_element(int ncid, int typeid1, ref NcVlen vlen_element, out nuint len, IntPtr data);
     #endregion
     #endregion
 
@@ -1005,5 +1008,4 @@ public static partial class Native
 
     [DllImport(library, CallingConvention=CallingConvention.Cdecl)]
     public static extern int nc_get_att_string(int ncid, int varid, string name, IntPtr[] ip);
-
 }

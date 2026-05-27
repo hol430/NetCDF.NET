@@ -1,4 +1,4 @@
-using NC.Net.Interop;
+using NetCDF.Interop;
 using NetCDF.Tests.Interop;
 
 namespace NetCDF.Tests.Helpers;

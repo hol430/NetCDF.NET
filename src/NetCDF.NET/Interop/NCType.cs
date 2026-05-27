@@ -1,4 +1,4 @@
-namespace NC.Net.Interop;
+namespace NetCDF.Interop;
 
 /// <summary>The netcdf external data types</summary>
 public enum NCType : int

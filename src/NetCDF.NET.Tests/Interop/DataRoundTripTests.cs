@@ -1,5 +1,7 @@
-using NC.Net.Interop;
+using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+
+using static NetCDF.Tests.Interop.InteropTestCommon;
 
 namespace NetCDF.Tests.Interop;
 
@@ -9,105 +11,133 @@ public sealed class DataRoundTripTests
     [InlineData(3, 1, 4, 1, 5)]
     public void IntData_RoundTripAcrossCloseReopen(params int[] expected)
     {
-        using var temp = new TempFile();
+        using NcTempFile hnd = new();
 
-        using (NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4))
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)5, out int dimId), "nc_def_dim");
-            InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "ints", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
-            InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)expected.Length, out int dimId), "nc_def_dim");
+        AssertSuccess(Native.nc_def_var(hnd.Id, "ints", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
+        AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_put_var_int(hnd.Id, varId, expected), "nc_put_var_int");
 
-            InteropTestCommon.AssertSuccess(Native.nc_put_var_int(hnd.Id, varId, expected), "nc_put_var_int");
-        }
+        hnd.CloseHandle();
 
-        using (NcFileHandle hnd = NcFileHandle.Open(temp.FilePath, OpenMode.NC_NOWRITE))
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_inq_varid(hnd.Id, "ints", out int readVarId), "nc_inq_varid");
+        using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
+        AssertSuccess(Native.nc_inq_varid(read.Id, "ints", out int readVarId), "nc_inq_varid");
 
-            int[] actual = new int[expected.Length];
-            InteropTestCommon.AssertSuccess(Native.nc_get_var_int(hnd.Id, readVarId, actual), "nc_get_var_int");
-            Assert.Equal(expected, actual);
-        }
+        int[] actual = new int[expected.Length];
+        AssertSuccess(Native.nc_get_var_int(read.Id, readVarId, actual), "nc_get_var_int");
+        Assert.Equal(expected, actual);
     }
 
     [Theory]
     [InlineData(0.5d, -1.25d, 2.0d, 9.75d)]
     public void DoubleData_RoundTripAcrossCloseReopen(params double[] expected)
     {
-        using var temp = new TempFile();
+        using NcTempFile hnd = new();
 
-        using (NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4))
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)4, out int dimId), "nc_def_dim");
-            InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "doubles", NCType.NC_DOUBLE, 1, [dimId], out int varId), "nc_def_var");
-            InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)expected.Length, out int dimId), "nc_def_dim");
+        AssertSuccess(Native.nc_def_var(hnd.Id, "doubles", NCType.NC_DOUBLE, 1, [dimId], out int varId), "nc_def_var");
+        AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_put_var_double(hnd.Id, varId, expected), "nc_put_var_double");
 
-            InteropTestCommon.AssertSuccess(Native.nc_put_var_double(hnd.Id, varId, expected), "nc_put_var_double");
-        }
+        hnd.CloseHandle();
 
-        using (NcFileHandle hnd = NcFileHandle.Open(temp.FilePath, OpenMode.NC_NOWRITE))
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_inq_varid(hnd.Id, "doubles", out int readVarId), "nc_inq_varid");
+        using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
+        AssertSuccess(Native.nc_inq_varid(read.Id, "doubles", out int readVarId), "nc_inq_varid");
 
-            double[] actual = new double[expected.Length];
-            InteropTestCommon.AssertSuccess(Native.nc_get_var_double(hnd.Id, readVarId, actual), "nc_get_var_double");
-            Assert.Equal(expected, actual);
-        }
+        double[] actual = new double[expected.Length];
+        AssertSuccess(Native.nc_get_var_double(read.Id, readVarId, actual), "nc_get_var_double");
+        Assert.Equal(expected, actual);
     }
 
     [Fact]
     public void PutVaraInt_WritesSubset_AndGetVarIntReadsExpectedFullArray()
     {
-        using var temp = new TempFile();
+        using NcTempFile hnd = new();
+        int[] all = [0, 0, 0, 0, 0, 0];
 
-        using (NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4))
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)6, out int dimId), "nc_def_dim");
-            InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "ints", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
-            InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)all.Length, out int dimId), "nc_def_dim");
+        AssertSuccess(Native.nc_def_var(hnd.Id, "ints", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
+        AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
-            int[] all = [0, 0, 0, 0, 0, 0];
-            InteropTestCommon.AssertSuccess(Native.nc_put_var_int(hnd.Id, varId, all), "nc_put_var_int(init)");
+        AssertSuccess(Native.nc_put_var_int(hnd.Id, varId, all), "nc_put_var_int(init)");
 
-            IntPtr[] start = [(IntPtr)2];
-            IntPtr[] count = [(IntPtr)3];
-            int[] subset = [9, 8, 7];
-            InteropTestCommon.AssertSuccess(Native.nc_put_vara_int(hnd.Id, varId, start, count, subset), "nc_put_vara_int");
-        }
+        IntPtr[] start = [(IntPtr)2];
+        IntPtr[] count = [(IntPtr)3];
+        int[] subset = [9, 8, 7];
+        AssertSuccess(Native.nc_put_vara_int(hnd.Id, varId, start, count, subset), "nc_put_vara_int");
 
-        using (NcFileHandle hnd = NcFileHandle.Open(temp.FilePath, OpenMode.NC_NOWRITE))
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_inq_varid(hnd.Id, "ints", out int varId), "nc_inq_varid");
-            int[] actual = new int[6];
-            InteropTestCommon.AssertSuccess(Native.nc_get_var_int(hnd.Id, varId, actual), "nc_get_var_int");
-            Assert.Equal(new[] { 0, 0, 9, 8, 7, 0 }, actual);
-        }
+        hnd.CloseHandle();
+
+        using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
+        AssertSuccess(Native.nc_inq_varid(read.Id, "ints", out varId), "nc_inq_varid");
+        int[] actual = new int[6];
+        AssertSuccess(Native.nc_get_var_int(read.Id, varId, actual), "nc_get_var_int");
+        Assert.Equal(new[] { 0, 0, 9, 8, 7, 0 }, actual);
     }
 
     [Fact]
     public void GetVaraInt_ReadsSubset()
     {
-        using var temp = new TempFile();
+        using NcTempFile hnd = new();
+        int[] expected = [10, 20, 30, 40, 50, 60];
 
-        using (NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4))
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)6, out int dimId), "nc_def_dim");
-            InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "ints", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
-            InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)expected.Length, out int dimId), "nc_def_dim");
+        AssertSuccess(Native.nc_def_var(hnd.Id, "ints", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
+        AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
-            int[] expected = [10, 20, 30, 40, 50, 60];
-            InteropTestCommon.AssertSuccess(Native.nc_put_var_int(hnd.Id, varId, expected), "nc_put_var_int");
-        }
+        AssertSuccess(Native.nc_put_var_int(hnd.Id, varId, expected), "nc_put_var_int");
 
-        using (NcFileHandle hnd = NcFileHandle.Open(temp.FilePath, OpenMode.NC_NOWRITE))
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_inq_varid(hnd.Id, "ints", out int varId), "nc_inq_varid");
+        hnd.CloseHandle();
 
-            IntPtr[] start = [(IntPtr)1];
-            IntPtr[] count = [(IntPtr)3];
-            int[] actual = new int[3];
-            InteropTestCommon.AssertSuccess(Native.nc_get_vara_int(hnd.Id, varId, start, count, actual), "nc_get_vara_int");
-            Assert.Equal(new[] { 20, 30, 40 }, actual);
-        }
+        using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
+        AssertSuccess(Native.nc_inq_varid(read.Id, "ints", out varId), "nc_inq_varid");
+
+        IntPtr[] start = [(IntPtr)1];
+        IntPtr[] count = [(IntPtr)3];
+        int[] actual = new int[3];
+        AssertSuccess(Native.nc_get_vara_int(read.Id, varId, start, count, actual), "nc_get_vara_int");
+        Assert.Equal(new[] { 20, 30, 40 }, actual);
+    }
+
+    [Theory]
+    [InlineData(1.25f, -3.5f, 0.0f, 9.75f)]
+    public void FloatData_RoundTripAcrossCloseReopen(params float[] expected)
+    {
+        using NcTempFile hnd = new();
+
+        AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)expected.Length, out int dimId), "nc_def_dim");
+        AssertSuccess(Native.nc_def_var(hnd.Id, "floats", NCType.NC_FLOAT, 1, [dimId], out int varId), "nc_def_var");
+        AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_put_var_float(hnd.Id, varId, expected), "nc_put_var_float");
+
+        hnd.CloseHandle();
+
+        using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
+        AssertSuccess(Native.nc_inq_varid(read.Id, "floats", out int readVarId), "nc_inq_varid");
+
+        float[] actual = new float[expected.Length];
+        AssertSuccess(Native.nc_get_var_float(read.Id, readVarId, actual), "nc_get_var_float");
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData((short)-2, (short)0, (short)7, (short)1024)]
+    public void ShortData_RoundTripAcrossCloseReopen(params short[] expected)
+    {
+        using NcTempFile hnd = new();
+
+        AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)expected.Length, out int dimId), "nc_def_dim");
+        AssertSuccess(Native.nc_def_var(hnd.Id, "shorts", NCType.NC_SHORT, 1, [dimId], out int varId), "nc_def_var");
+        AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_put_var_short(hnd.Id, varId, expected), "nc_put_var_short");
+
+        hnd.CloseHandle();
+
+        using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
+        AssertSuccess(Native.nc_inq_varid(read.Id, "shorts", out int readVarId), "nc_inq_varid");
+
+        short[] actual = new short[expected.Length];
+        AssertSuccess(Native.nc_get_var_short(read.Id, readVarId, actual), "nc_get_var_short");
+        Assert.Equal(expected, actual);
     }
 }

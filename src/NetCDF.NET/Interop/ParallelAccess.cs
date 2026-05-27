@@ -1,4 +1,4 @@
-namespace NC.Net.Interop;
+namespace NetCDF.Interop;
 
 /// <summary>
 /// The parallel access mode. When using collective access, certain functions

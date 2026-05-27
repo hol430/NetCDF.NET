@@ -1,4 +1,4 @@
-namespace NC.Net.Interop;
+namespace NetCDF.Interop;
 
 /// <summary>
 /// The open mode flags.

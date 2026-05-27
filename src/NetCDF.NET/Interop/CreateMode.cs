@@ -1,4 +1,4 @@
-namespace NC.Net.Interop;
+namespace NetCDF.Interop;
 
 /// <summary>
 /// The file creation mode flag. The following flags are available:
@@ -55,7 +55,7 @@ public enum CreateMode : int
     NC_SHARE = 0x0800,
 
     /// <summary>
-    /// se netCDF-4/HDF5 format. Mode flag for nc_create().
+    /// Use netCDF-4/HDF5 format. Mode flag for nc_create().
     /// </summary>
     NC_NETCDF4 = 0x1000,
 

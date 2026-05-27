@@ -1,4 +1,4 @@
-using NC.Net.Interop;
+using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
 
 namespace NetCDF.Tests.Interop;
@@ -57,8 +57,7 @@ public sealed class CreateOpenCloseTests
     [Fact]
     public void NcInq_ReturnsExpectedAggregateCounts()
     {
-        using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcTempFile hnd = new();
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "time", (nuint)3, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "values", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
@@ -75,8 +74,7 @@ public sealed class CreateOpenCloseTests
     [Fact]
     public void NcInqFormat_APIs_ReturnSaneValues()
     {
-        using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcTempFile hnd = new();
 
         InteropTestCommon.AssertSuccess(Native.nc_inq_format(hnd.Id, out int format), "nc_inq_format");
         Assert.True(format > 0);
@@ -89,18 +87,32 @@ public sealed class CreateOpenCloseTests
     [Fact]
     public void NcRedef_AllowsReturningToDefineMode()
     {
-        using var temp = new TempFile();
+        using NcTempFile hnd = new();
 
-        using (NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4))
-        {
-            InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)3, out int dimId), "nc_def_dim");
+        InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)3, out int dimId), "nc_def_dim");
             InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef(first)");
             InteropTestCommon.AssertSuccess(Native.nc_redef(hnd.Id), "nc_redef");
             InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out _), "nc_def_var(after redef)");
             InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef(second)");
-        }
 
-        using NcFileHandle read = NcFileHandle.Open(temp.FilePath, OpenMode.NC_NOWRITE);
+        hnd.CloseHandle();
+
+        using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
         InteropTestCommon.AssertSuccess(Native.nc_inq_varid(read.Id, "v", out _), "nc_inq_varid(after reopen)");
+    }
+
+    [Fact]
+    public void NcInqNdimsAndNvars_ReturnExpectedCounts()
+    {
+        using NcTempFile hnd = new();
+
+        InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)2, out int dimId), "nc_def_dim");
+        InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out _), "nc_def_var");
+
+        InteropTestCommon.AssertSuccess(Native.nc_inq_ndims(hnd.Id, out int ndims), "nc_inq_ndims");
+        Assert.Equal(1, ndims);
+
+        InteropTestCommon.AssertSuccess(Native.nc_inq_nvars(hnd.Id, out int nvars), "nc_inq_nvars");
+        Assert.Equal(1, nvars);
     }
 }
