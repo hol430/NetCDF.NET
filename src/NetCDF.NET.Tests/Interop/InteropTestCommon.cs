@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using NetCDF.Interop;
 using Xunit.Sdk;
 
@@ -23,7 +24,8 @@ internal static class InteropTestCommon
             return;
         }
 
-        string message = Native.nc_strerror(status);
+        nint messagePtr = Native.nc_strerror(status);
+        string message = Marshal.PtrToStringUTF8(messagePtr) ?? string.Empty;
         throw new XunitException($"{operation} failed with status {status}: {message}");
     }
 
@@ -36,7 +38,8 @@ internal static class InteropTestCommon
 
         if (status == NcEnotNc4 || status == NcEnotBuilt || IsIn(status, additionalUnavailableStatuses))
         {
-            string message = Native.nc_strerror(status);
+            nint messagePtr = Native.nc_strerror(status);
+            string message = Marshal.PtrToStringUTF8(messagePtr) ?? string.Empty;
             throw SkipException.ForSkip($"{operation} unavailable in this runtime (status {status}: {message}).");
         }
 

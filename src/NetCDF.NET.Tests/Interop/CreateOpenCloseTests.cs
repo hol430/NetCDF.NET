@@ -1,3 +1,5 @@
+using System.Formats.Asn1;
+using System.Runtime.InteropServices;
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
 
@@ -8,7 +10,7 @@ public sealed class CreateOpenCloseTests
     [Fact]
     public void NcInqLibvers_ReturnsNonEmptyString()
     {
-        string version = Native.nc_inq_libvers();
+        string version = Marshal.PtrToStringUTF8(Native.nc_inq_libvers()) ?? string.Empty;
         Assert.False(string.IsNullOrWhiteSpace(version));
         Assert.Contains('.', version);
     }
@@ -16,7 +18,7 @@ public sealed class CreateOpenCloseTests
     [Fact]
     public void NcStrerror_ForNegativeCode_ReturnsMessage()
     {
-        string message = Native.nc_strerror(-1);
+        string message = Marshal.PtrToStringUTF8(Native.nc_strerror(-1)) ?? string.Empty;
         Assert.False(string.IsNullOrWhiteSpace(message));
     }
 
