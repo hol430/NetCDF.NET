@@ -289,11 +289,11 @@ public sealed class AttributeTests
         if (OperatingSystem.IsWindows())
         {
             int[] i32 = Array.ConvertAll(values, checked(v => (int)v));
-            InteropTestCommon.AssertSuccess(Native.NativeWindows.nc_put_att_long(ncid, varid, name, type, (nuint)i32.Length, i32), "nc_put_att_long");
+            InteropTestCommon.AssertSuccess(Native.Windows.nc_put_att_long(ncid, varid, name, type, (nuint)i32.Length, i32), "nc_put_att_long");
             return;
         }
 
-        InteropTestCommon.AssertSuccess(Native.NativeUnix.nc_put_att_long(ncid, varid, name, type, (nuint)values.Length, values), "nc_put_att_long");
+        InteropTestCommon.AssertSuccess(Native.Unix.nc_put_att_long(ncid, varid, name, type, (nuint)values.Length, values), "nc_put_att_long");
     }
 
     private static void GetAttLong(int ncid, int varid, string name, long[] destination)
@@ -301,7 +301,7 @@ public sealed class AttributeTests
         if (OperatingSystem.IsWindows())
         {
             int[] i32 = new int[destination.Length];
-            InteropTestCommon.AssertSuccess(Native.NativeWindows.nc_get_att_long(ncid, varid, name, i32), "nc_get_att_long");
+            InteropTestCommon.AssertSuccess(Native.Windows.nc_get_att_long(ncid, varid, name, i32), "nc_get_att_long");
             for (int i = 0; i < i32.Length; i++)
             {
                 destination[i] = i32[i];
@@ -310,6 +310,6 @@ public sealed class AttributeTests
             return;
         }
 
-        InteropTestCommon.AssertSuccess(Native.NativeUnix.nc_get_att_long(ncid, varid, name, destination), "nc_get_att_long");
+        InteropTestCommon.AssertSuccess(Native.Unix.nc_get_att_long(ncid, varid, name, destination), "nc_get_att_long");
     }
 }

@@ -589,11 +589,11 @@ public sealed class DataFunctionContractTests
             if (OperatingSystem.IsWindows())
             {
                 int[] i32 = Array.ConvertAll(values, checked(v => (int)v));
-                AssertSuccess(Native.NativeWindows.nc_put_var_long(ncid, varid, i32), "nc_put_var_long");
+                AssertSuccess(Native.Windows.nc_put_var_long(ncid, varid, i32), "nc_put_var_long");
                 return;
             }
 
-            AssertSuccess(Native.NativeUnix.nc_put_var_long(ncid, varid, values), "nc_put_var_long");
+            AssertSuccess(Native.Unix.nc_put_var_long(ncid, varid, values), "nc_put_var_long");
         }
 
         private static void GetVarLong(int ncid, int varid, long[] destination)
@@ -601,7 +601,7 @@ public sealed class DataFunctionContractTests
             if (OperatingSystem.IsWindows())
             {
                 int[] i32 = new int[destination.Length];
-                AssertSuccess(Native.NativeWindows.nc_get_vara_long(ncid, varid, Ix(0), Ix(destination.Length), i32), "nc_get_var_long");
+                AssertSuccess(Native.Windows.nc_get_vara_long(ncid, varid, Ix(0), Ix(destination.Length), i32), "nc_get_var_long");
                 for (int i = 0; i < i32.Length; i++)
                 {
                     destination[i] = i32[i];
@@ -610,7 +610,7 @@ public sealed class DataFunctionContractTests
                 return;
             }
 
-            AssertSuccess(Native.NativeUnix.nc_get_vara_long(ncid, varid, Ix(0), Ix(destination.Length), destination), "nc_get_var_long");
+            AssertSuccess(Native.Unix.nc_get_vara_long(ncid, varid, Ix(0), Ix(destination.Length), destination), "nc_get_var_long");
         }
 
         private static void PutVar1Long(int ncid, int varid, int index, long value)
@@ -618,23 +618,23 @@ public sealed class DataFunctionContractTests
             if (OperatingSystem.IsWindows())
             {
                 int i32 = checked((int)value);
-                AssertSuccess(Native.NativeWindows.nc_put_var1_long(ncid, varid, Ix(index), ref i32), "nc_put_var1_long");
+                AssertSuccess(Native.Windows.nc_put_var1_long(ncid, varid, Ix(index), ref i32), "nc_put_var1_long");
                 return;
             }
 
-            AssertSuccess(Native.NativeUnix.nc_put_var1_long(ncid, varid, Ix(index), ref value), "nc_put_var1_long");
+            AssertSuccess(Native.Unix.nc_put_var1_long(ncid, varid, Ix(index), ref value), "nc_put_var1_long");
         }
 
         private static void GetVar1Long(int ncid, int varid, int index, out long value)
         {
             if (OperatingSystem.IsWindows())
             {
-                AssertSuccess(Native.NativeWindows.nc_get_var1_long(ncid, varid, Ix(index), out int i32), "nc_get_var1_long");
+                AssertSuccess(Native.Windows.nc_get_var1_long(ncid, varid, Ix(index), out int i32), "nc_get_var1_long");
                 value = i32;
                 return;
             }
 
-            AssertSuccess(Native.NativeUnix.nc_get_var1_long(ncid, varid, Ix(index), out long i64), "nc_get_var1_long");
+            AssertSuccess(Native.Unix.nc_get_var1_long(ncid, varid, Ix(index), out long i64), "nc_get_var1_long");
             value = i64;
         }
 
@@ -643,11 +643,11 @@ public sealed class DataFunctionContractTests
             if (OperatingSystem.IsWindows())
             {
                 int[] i32 = Array.ConvertAll(values, checked(v => (int)v));
-                AssertSuccess(Native.NativeWindows.nc_put_vara_long(ncid, varid, Ix(start), Ix(count), i32), "nc_put_vara_long");
+                AssertSuccess(Native.Windows.nc_put_vara_long(ncid, varid, Ix(start), Ix(count), i32), "nc_put_vara_long");
                 return;
             }
 
-            AssertSuccess(Native.NativeUnix.nc_put_vara_long(ncid, varid, Ix(start), Ix(count), values), "nc_put_vara_long");
+            AssertSuccess(Native.Unix.nc_put_vara_long(ncid, varid, Ix(start), Ix(count), values), "nc_put_vara_long");
         }
 
         private static void GetVaraLong(int ncid, int varid, int start, int count, long[] destination)
@@ -655,7 +655,7 @@ public sealed class DataFunctionContractTests
             if (OperatingSystem.IsWindows())
             {
                 int[] i32 = new int[destination.Length];
-                AssertSuccess(Native.NativeWindows.nc_get_vara_long(ncid, varid, Ix(start), Ix(count), i32), "nc_get_vara_long");
+                AssertSuccess(Native.Windows.nc_get_vara_long(ncid, varid, Ix(start), Ix(count), i32), "nc_get_vara_long");
                 for (int i = 0; i < i32.Length; i++)
                 {
                     destination[i] = i32[i];
@@ -664,7 +664,7 @@ public sealed class DataFunctionContractTests
                 return;
             }
 
-            AssertSuccess(Native.NativeUnix.nc_get_vara_long(ncid, varid, Ix(start), Ix(count), destination), "nc_get_vara_long");
+            AssertSuccess(Native.Unix.nc_get_vara_long(ncid, varid, Ix(start), Ix(count), destination), "nc_get_vara_long");
         }
 
         private static void PutVarsLong(int ncid, int varid, int start, int count, int stride, long[] values)
@@ -672,11 +672,11 @@ public sealed class DataFunctionContractTests
             if (OperatingSystem.IsWindows())
             {
                 int[] i32 = Array.ConvertAll(values, checked(v => (int)v));
-                AssertSuccess(Native.NativeWindows.nc_put_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), i32), "nc_put_vars_long");
+                AssertSuccess(Native.Windows.nc_put_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), i32), "nc_put_vars_long");
                 return;
             }
 
-            AssertSuccess(Native.NativeUnix.nc_put_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), values), "nc_put_vars_long");
+            AssertSuccess(Native.Unix.nc_put_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), values), "nc_put_vars_long");
         }
 
         private static void GetVarsLong(int ncid, int varid, int start, int count, int stride, long[] destination)
@@ -684,7 +684,7 @@ public sealed class DataFunctionContractTests
             if (OperatingSystem.IsWindows())
             {
                 int[] i32 = new int[destination.Length];
-                AssertSuccess(Native.NativeWindows.nc_get_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), i32), "nc_get_vars_long");
+                AssertSuccess(Native.Windows.nc_get_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), i32), "nc_get_vars_long");
                 for (int i = 0; i < i32.Length; i++)
                 {
                     destination[i] = i32[i];
@@ -693,7 +693,7 @@ public sealed class DataFunctionContractTests
                 return;
             }
 
-            AssertSuccess(Native.NativeUnix.nc_get_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), destination), "nc_get_vars_long");
+            AssertSuccess(Native.Unix.nc_get_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), destination), "nc_get_vars_long");
         }
     }
 }

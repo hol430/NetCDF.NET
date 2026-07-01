@@ -1,8 +1,8 @@
-# NC.Net
+# NetCCDF.NET
 
-C# bindings for NetCDF.
+C# bindings for [NetCDF](https://doi.org/10.5065/D6H70CW6).
 
-Name TBD.
+netCDF: doi:10.5065/D6H70CW6
 
 ## Build
 
