@@ -185,10 +185,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new();
         long[] expected = [-1234567890L, 9876543210L];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_long(hnd.Id, InteropTestCommon.NcGlobal, "long_values", NCType.NC_INT64, 2, expected), "nc_put_att_long");
+        PutAttLong(hnd.Id, InteropTestCommon.NcGlobal, "long_values", NCType.NC_INT64, expected);
         AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "long_values", NCType.NC_INT64, 2);
         long[] actual = new long[expected.Length];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_long(hnd.Id, InteropTestCommon.NcGlobal, "long_values", actual), "nc_get_att_long");
+        GetAttLong(hnd.Id, InteropTestCommon.NcGlobal, "long_values", actual);
         Assert.Equal(expected, actual);
     }
 
@@ -282,5 +282,34 @@ public sealed class AttributeTests
 
         int[] values = new int[1];
         Assert.NotEqual(InteropTestCommon.NcNoErr, Native.nc_get_att_int(hnd.Id, varId, "missing", values));
+    }
+
+    private static void PutAttLong(int ncid, int varid, string name, NCType type, long[] values)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            int[] i32 = Array.ConvertAll(values, checked(v => (int)v));
+            InteropTestCommon.AssertSuccess(Native.NativeWindows.nc_put_att_long(ncid, varid, name, type, (nuint)i32.Length, i32), "nc_put_att_long");
+            return;
+        }
+
+        InteropTestCommon.AssertSuccess(Native.NativeUnix.nc_put_att_long(ncid, varid, name, type, (nuint)values.Length, values), "nc_put_att_long");
+    }
+
+    private static void GetAttLong(int ncid, int varid, string name, long[] destination)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            int[] i32 = new int[destination.Length];
+            InteropTestCommon.AssertSuccess(Native.NativeWindows.nc_get_att_long(ncid, varid, name, i32), "nc_get_att_long");
+            for (int i = 0; i < i32.Length; i++)
+            {
+                destination[i] = i32[i];
+            }
+
+            return;
+        }
+
+        InteropTestCommon.AssertSuccess(Native.NativeUnix.nc_get_att_long(ncid, varid, name, destination), "nc_get_att_long");
     }
 }

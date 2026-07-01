@@ -278,6 +278,10 @@ public sealed class DataFunctionContractTests
             ForText(),
         ];
 
+        private static nuint[] Ix(int value) => [(nuint)value];
+
+        private static nint[] Stride(int value) => [(nint)value];
+
         private static DataBinding ForInt() => new(
             "int", "v_int", NCType.NC_INT,
             new[] { 3, 1, 4, 1, 5, 9, 2 },
@@ -293,10 +297,10 @@ public sealed class DataFunctionContractTests
                 AssertSuccess(Native.nc_get_var1_int(id, varid, [(nuint)idx], out int v), "nc_get_var1_int");
                 ((Box<int>)box).Value = v;
             },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_int(id, varid, [(IntPtr)start], [(IntPtr)count], (int[])a), "nc_put_vara_int"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_int(id, varid, [(IntPtr)start], [(IntPtr)count], (int[])a), "nc_get_vara_int"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_int(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (int[])a), "nc_put_vars_int"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_int(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (int[])a), "nc_get_vars_int"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_int(id, varid, Ix(start), Ix(count), (int[])a), "nc_put_vara_int"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_int(id, varid, Ix(start), Ix(count), (int[])a), "nc_get_vara_int"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_int(id, varid, Ix(start), Ix(count), Stride(stride), (int[])a), "nc_put_vars_int"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_int(id, varid, Ix(start), Ix(count), Stride(stride), (int[])a), "nc_get_vars_int"),
             true);
 
         private static DataBinding ForShort() => new(
@@ -310,10 +314,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_short(id, varid, (short[])a), "nc_get_var_short"),
             (id, varid, idx, v) => { short value = (short)v; AssertSuccess(Native.nc_put_var1_short(id, varid, [(nuint)idx], ref value), "nc_put_var1_short"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_short(id, varid, [(nuint)idx], out short v), "nc_get_var1_short"); ((Box<short>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_short(id, varid, [(IntPtr)start], [(IntPtr)count], (short[])a), "nc_put_vara_short"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_short(id, varid, [(IntPtr)start], [(IntPtr)count], (short[])a), "nc_get_vara_short"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_short(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (short[])a), "nc_put_vars_short"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_short(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (short[])a), "nc_get_vars_short"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_short(id, varid, Ix(start), Ix(count), (short[])a), "nc_put_vara_short"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_short(id, varid, Ix(start), Ix(count), (short[])a), "nc_get_vara_short"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_short(id, varid, Ix(start), Ix(count), Stride(stride), (short[])a), "nc_put_vars_short"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_short(id, varid, Ix(start), Ix(count), Stride(stride), (short[])a), "nc_get_vars_short"),
             true);
 
         private static DataBinding ForFloat() => new(
@@ -327,10 +331,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_float(id, varid, (float[])a), "nc_get_var_float"),
             (id, varid, idx, v) => { float value = (float)v; AssertSuccess(Native.nc_put_var1_float(id, varid, [(nuint)idx], ref value), "nc_put_var1_float"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_float(id, varid, [(nuint)idx], out float v), "nc_get_var1_float"); ((Box<float>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_float(id, varid, [(IntPtr)start], [(IntPtr)count], (float[])a), "nc_put_vara_float"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_float(id, varid, [(IntPtr)start], [(IntPtr)count], (float[])a), "nc_get_vara_float"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_float(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (float[])a), "nc_put_vars_float"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_float(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (float[])a), "nc_get_vars_float"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_float(id, varid, Ix(start), Ix(count), (float[])a), "nc_put_vara_float"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_float(id, varid, Ix(start), Ix(count), (float[])a), "nc_get_vara_float"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_float(id, varid, Ix(start), Ix(count), Stride(stride), (float[])a), "nc_put_vars_float"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_float(id, varid, Ix(start), Ix(count), Stride(stride), (float[])a), "nc_get_vars_float"),
             true);
 
         private static DataBinding ForDouble() => new(
@@ -344,10 +348,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_double(id, varid, (double[])a), "nc_get_var_double"),
             (id, varid, idx, v) => { double value = (double)v; AssertSuccess(Native.nc_put_var1_double(id, varid, [(nuint)idx], ref value), "nc_put_var1_double"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_double(id, varid, [(nuint)idx], out double v), "nc_get_var1_double"); ((Box<double>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_double(id, varid, [(IntPtr)start], [(IntPtr)count], (double[])a), "nc_put_vara_double"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_double(id, varid, [(IntPtr)start], [(IntPtr)count], (double[])a), "nc_get_vara_double"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_double(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (double[])a), "nc_put_vars_double"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_double(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (double[])a), "nc_get_vars_double"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_double(id, varid, Ix(start), Ix(count), (double[])a), "nc_put_vara_double"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_double(id, varid, Ix(start), Ix(count), (double[])a), "nc_get_vara_double"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_double(id, varid, Ix(start), Ix(count), Stride(stride), (double[])a), "nc_put_vars_double"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_double(id, varid, Ix(start), Ix(count), Stride(stride), (double[])a), "nc_get_vars_double"),
             true);
 
         private static DataBinding ForLong() => new(
@@ -357,14 +361,14 @@ public sealed class DataFunctionContractTests
             len => new long[len],
             len => new long[len],
             () => new Box<long>(),
-            (id, varid, a) => AssertSuccess(Native.nc_put_var_long(id, varid, (long[])a), "nc_put_var_long"),
-            (id, varid, a) => AssertSuccess(Native.nc_get_var_long(id, varid, (long[])a), "nc_get_var_long"),
-            (id, varid, idx, v) => { long value = (long)v; AssertSuccess(Native.nc_put_var1_long(id, varid, [(nuint)idx], ref value), "nc_put_var1_long"); },
-            (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_long(id, varid, [(nuint)idx], out long v), "nc_get_var1_long"); ((Box<long>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_long(id, varid, [(IntPtr)start], [(IntPtr)count], (long[])a), "nc_put_vara_long"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_long(id, varid, [(IntPtr)start], [(IntPtr)count], (long[])a), "nc_get_vara_long"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_long(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (long[])a), "nc_put_vars_long"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_long(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (long[])a), "nc_get_vars_long"),
+            (id, varid, a) => PutVarLong(id, varid, (long[])a),
+            (id, varid, a) => GetVarLong(id, varid, (long[])a),
+            (id, varid, idx, v) => PutVar1Long(id, varid, idx, (long)v),
+            (id, varid, idx, box) => { GetVar1Long(id, varid, idx, out long v); ((Box<long>)box).Value = v; },
+            (id, varid, start, count, a) => PutVaraLong(id, varid, start, count, (long[])a),
+            (id, varid, start, count, a) => GetVaraLong(id, varid, start, count, (long[])a),
+            (id, varid, start, count, stride, a) => PutVarsLong(id, varid, start, count, stride, (long[])a),
+            (id, varid, start, count, stride, a) => GetVarsLong(id, varid, start, count, stride, (long[])a),
             false,
             true);
 
@@ -379,10 +383,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_schar(id, varid, (sbyte[])a), "nc_get_var_schar"),
             (id, varid, idx, v) => { sbyte value = (sbyte)v; AssertSuccess(Native.nc_put_var1_schar(id, varid, [(nuint)idx], ref value), "nc_put_var1_schar"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_schar(id, varid, [(nuint)idx], out sbyte v), "nc_get_var1_schar"); ((Box<sbyte>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_schar(id, varid, [(IntPtr)start], [(IntPtr)count], (sbyte[])a), "nc_put_vara_schar"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_schar(id, varid, [(IntPtr)start], [(IntPtr)count], (sbyte[])a), "nc_get_vara_schar"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_schar(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (sbyte[])a), "nc_put_vars_schar"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_schar(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (sbyte[])a), "nc_get_vars_schar"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_schar(id, varid, Ix(start), Ix(count), (sbyte[])a), "nc_put_vara_schar"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_schar(id, varid, Ix(start), Ix(count), (sbyte[])a), "nc_get_vara_schar"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_schar(id, varid, Ix(start), Ix(count), Stride(stride), (sbyte[])a), "nc_put_vars_schar"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_schar(id, varid, Ix(start), Ix(count), Stride(stride), (sbyte[])a), "nc_get_vars_schar"),
             true);
 
         private static DataBinding ForByteAsUChar() => new(
@@ -396,10 +400,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_uchar(id, varid, (byte[])a), "nc_get_var_uchar"),
             (id, varid, idx, v) => { byte value = (byte)v; AssertSuccess(Native.nc_put_var1_uchar(id, varid, [(nuint)idx], ref value), "nc_put_var1_uchar"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_uchar(id, varid, [(nuint)idx], out byte v), "nc_get_var1_uchar"); ((Box<byte>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_uchar(id, varid, [(IntPtr)start], [(IntPtr)count], (byte[])a), "nc_put_vara_uchar"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_uchar(id, varid, [(IntPtr)start], [(IntPtr)count], (byte[])a), "nc_get_vara_uchar"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_uchar(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (byte[])a), "nc_put_vars_uchar"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_uchar(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (byte[])a), "nc_get_vars_uchar"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_uchar(id, varid, Ix(start), Ix(count), (byte[])a), "nc_put_vara_uchar"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_uchar(id, varid, Ix(start), Ix(count), (byte[])a), "nc_get_vara_uchar"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_uchar(id, varid, Ix(start), Ix(count), Stride(stride), (byte[])a), "nc_put_vars_uchar"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_uchar(id, varid, Ix(start), Ix(count), Stride(stride), (byte[])a), "nc_get_vars_uchar"),
             true);
 
         private static DataBinding ForByteAsUByte() => new(
@@ -413,8 +417,8 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_ubyte(id, varid, (byte[])a), "nc_get_var_ubyte"),
             (id, varid, idx, v) => { byte value = (byte)v; AssertSuccess(Native.nc_put_var1_ubyte(id, varid, [(nuint)idx], ref value), "nc_put_var1_ubyte"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_ubyte(id, varid, [(nuint)idx], out byte v), "nc_get_var1_ubyte"); ((Box<byte>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_ubyte(id, varid, [(IntPtr)start], [(IntPtr)count], (byte[])a), "nc_put_vara_ubyte"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_ubyte(id, varid, [(IntPtr)start], [(IntPtr)count], (byte[])a), "nc_get_vara_ubyte"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_ubyte(id, varid, Ix(start), Ix(count), (byte[])a), "nc_put_vara_ubyte"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_ubyte(id, varid, Ix(start), Ix(count), (byte[])a), "nc_get_vara_ubyte"),
             (id, varid, start, count, stride, a) => throw SkipException.ForSkip("nc_put_vars_ubyte is not exposed in Native.cs"),
             (id, varid, start, count, stride, a) => throw SkipException.ForSkip("nc_get_vars_ubyte is not exposed in Native.cs"),
             false,
@@ -431,10 +435,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_ushort(id, varid, (ushort[])a), "nc_get_var_ushort"),
             (id, varid, idx, v) => { ushort value = (ushort)v; AssertSuccess(Native.nc_put_var1_ushort(id, varid, [(nuint)idx], ref value), "nc_put_var1_ushort"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_ushort(id, varid, [(nuint)idx], out ushort v), "nc_get_var1_ushort"); ((Box<ushort>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_ushort(id, varid, [(IntPtr)start], [(IntPtr)count], (ushort[])a), "nc_put_vara_ushort"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_ushort(id, varid, [(IntPtr)start], [(IntPtr)count], (ushort[])a), "nc_get_vara_ushort"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_ushort(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (ushort[])a), "nc_put_vars_ushort"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_ushort(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (ushort[])a), "nc_get_vars_ushort"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_ushort(id, varid, Ix(start), Ix(count), (ushort[])a), "nc_put_vara_ushort"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_ushort(id, varid, Ix(start), Ix(count), (ushort[])a), "nc_get_vara_ushort"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_ushort(id, varid, Ix(start), Ix(count), Stride(stride), (ushort[])a), "nc_put_vars_ushort"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_ushort(id, varid, Ix(start), Ix(count), Stride(stride), (ushort[])a), "nc_get_vars_ushort"),
             true);
 
         private static DataBinding ForUInt() => new(
@@ -448,10 +452,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_uint(id, varid, (uint[])a), "nc_get_var_uint"),
             (id, varid, idx, v) => { uint value = (uint)v; AssertSuccess(Native.nc_put_var1_uint(id, varid, [(nuint)idx], ref value), "nc_put_var1_uint"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_uint(id, varid, [(nuint)idx], out uint v), "nc_get_var1_uint"); ((Box<uint>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_uint(id, varid, [(IntPtr)start], [(IntPtr)count], (uint[])a), "nc_put_vara_uint"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_uint(id, varid, [(IntPtr)start], [(IntPtr)count], (uint[])a), "nc_get_vara_uint"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_uint(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (uint[])a), "nc_put_vars_uint"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_uint(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (uint[])a), "nc_get_vars_uint"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_uint(id, varid, Ix(start), Ix(count), (uint[])a), "nc_put_vara_uint"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_uint(id, varid, Ix(start), Ix(count), (uint[])a), "nc_get_vara_uint"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_uint(id, varid, Ix(start), Ix(count), Stride(stride), (uint[])a), "nc_put_vars_uint"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_uint(id, varid, Ix(start), Ix(count), Stride(stride), (uint[])a), "nc_get_vars_uint"),
             true);
 
         private static DataBinding ForLongLong() => new(
@@ -465,10 +469,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_longlong(id, varid, (long[])a), "nc_get_var_longlong"),
             (id, varid, idx, v) => { long value = (long)v; AssertSuccess(Native.nc_put_var1_longlong(id, varid, [(nuint)idx], ref value), "nc_put_var1_longlong"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_longlong(id, varid, [(nuint)idx], out long v), "nc_get_var1_longlong"); ((Box<long>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_longlong(id, varid, [(IntPtr)start], [(IntPtr)count], (long[])a), "nc_put_vara_longlong"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_longlong(id, varid, [(IntPtr)start], [(IntPtr)count], (long[])a), "nc_get_vara_longlong"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_longlong(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (long[])a), "nc_put_vars_longlong"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_longlong(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (long[])a), "nc_get_vars_longlong"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_longlong(id, varid, Ix(start), Ix(count), (long[])a), "nc_put_vara_longlong"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_longlong(id, varid, Ix(start), Ix(count), (long[])a), "nc_get_vara_longlong"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_longlong(id, varid, Ix(start), Ix(count), Stride(stride), (long[])a), "nc_put_vars_longlong"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_longlong(id, varid, Ix(start), Ix(count), Stride(stride), (long[])a), "nc_get_vars_longlong"),
             false,
             true);
 
@@ -483,10 +487,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_ulonglong(id, varid, (ulong[])a), "nc_get_var_ulonglong"),
             (id, varid, idx, v) => { ulong value = (ulong)v; AssertSuccess(Native.nc_put_var1_ulonglong(id, varid, [(nuint)idx], ref value), "nc_put_var1_ulonglong"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_ulonglong(id, varid, [(nuint)idx], out ulong v), "nc_get_var1_ulonglong"); ((Box<ulong>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_ulonglong(id, varid, [(IntPtr)start], [(IntPtr)count], (ulong[])a), "nc_put_vara_ulonglong"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_ulonglong(id, varid, [(IntPtr)start], [(IntPtr)count], (ulong[])a), "nc_get_vara_ulonglong"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_ulonglong(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (ulong[])a), "nc_put_vars_ulonglong"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_ulonglong(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (ulong[])a), "nc_get_vars_ulonglong"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_ulonglong(id, varid, Ix(start), Ix(count), (ulong[])a), "nc_put_vara_ulonglong"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_ulonglong(id, varid, Ix(start), Ix(count), (ulong[])a), "nc_get_vara_ulonglong"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_ulonglong(id, varid, Ix(start), Ix(count), Stride(stride), (ulong[])a), "nc_put_vars_ulonglong"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_ulonglong(id, varid, Ix(start), Ix(count), Stride(stride), (ulong[])a), "nc_get_vars_ulonglong"),
             false,
             true);
 
@@ -501,10 +505,10 @@ public sealed class DataFunctionContractTests
             (id, varid, a) => AssertSuccess(Native.nc_get_var_text(id, varid, (byte[])a), "nc_get_var_text"),
             (id, varid, idx, v) => { byte value = (byte)v; AssertSuccess(Native.nc_put_var1_text(id, varid, [(nuint)idx], ref value), "nc_put_var1_text"); },
             (id, varid, idx, box) => { AssertSuccess(Native.nc_get_var1_text(id, varid, [(nuint)idx], out byte v), "nc_get_var1_text"); ((Box<byte>)box).Value = v; },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_text(id, varid, [(IntPtr)start], [(IntPtr)count], (byte[])a), "nc_put_vara_text"),
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_text(id, varid, [(IntPtr)start], [(IntPtr)count], (byte[])a), "nc_get_vara_text"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_text(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (byte[])a), "nc_put_vars_text"),
-            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_text(id, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], (byte[])a), "nc_get_vars_text"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_text(id, varid, Ix(start), Ix(count), (byte[])a), "nc_put_vara_text"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_get_vara_text(id, varid, Ix(start), Ix(count), (byte[])a), "nc_get_vara_text"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_put_vars_text(id, varid, Ix(start), Ix(count), Stride(stride), (byte[])a), "nc_put_vars_text"),
+            (id, varid, start, count, stride, a) => AssertSuccess(Native.nc_get_vars_text(id, varid, Ix(start), Ix(count), Stride(stride), (byte[])a), "nc_get_vars_text"),
             false,
             true);
 
@@ -528,10 +532,10 @@ public sealed class DataFunctionContractTests
                 }
                 finally
                 {
-                    AssertSuccess(Native.nc_free_string((IntPtr)1, ptrs), "nc_free_string(var1)");
+                    AssertSuccess(Native.nc_free_string(1, ptrs), "nc_free_string(var1)");
                 }
             },
-            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_string(id, varid, [(IntPtr)start], [(IntPtr)count], (string[])a), "nc_put_vara_string"),
+            (id, varid, start, count, a) => AssertSuccess(Native.nc_put_vara_string(id, varid, Ix(start), Ix(count), (string[])a), "nc_put_vara_string"),
             (id, varid, start, count, a) => ReadVaraStringViaGetVars(id, varid, start, count, (string[])a),
             (id, varid, start, count, stride, a) =>
             {
@@ -554,7 +558,7 @@ public sealed class DataFunctionContractTests
             }
             finally
             {
-                AssertSuccess(Native.nc_free_string((IntPtr)ptrs.Length, ptrs), "nc_free_string(var)");
+                AssertSuccess(Native.nc_free_string((nuint)ptrs.Length, ptrs), "nc_free_string(var)");
             }
         }
 
@@ -568,7 +572,7 @@ public sealed class DataFunctionContractTests
             IntPtr[] ptrs = new IntPtr[count];
             try
             {
-                AssertSuccess(Native.nc_get_vars_string(ncid, varid, [(IntPtr)start], [(IntPtr)count], [(IntPtr)stride], ptrs), "nc_get_vars_string");
+                AssertSuccess(Native.nc_get_vars_string(ncid, varid, [(nuint)start], [(nuint)count], [(nint)stride], ptrs), "nc_get_vars_string");
                 for (int i = 0; i < count; i++)
                 {
                     destination[i] = Marshal.PtrToStringAnsi(ptrs[i]) ?? string.Empty;
@@ -576,8 +580,120 @@ public sealed class DataFunctionContractTests
             }
             finally
             {
-                AssertSuccess(Native.nc_free_string((IntPtr)ptrs.Length, ptrs), "nc_free_string(vars)");
+                AssertSuccess(Native.nc_free_string((nuint)ptrs.Length, ptrs), "nc_free_string(vars)");
             }
+        }
+
+        private static void PutVarLong(int ncid, int varid, long[] values)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                int[] i32 = Array.ConvertAll(values, checked(v => (int)v));
+                AssertSuccess(Native.NativeWindows.nc_put_var_long(ncid, varid, i32), "nc_put_var_long");
+                return;
+            }
+
+            AssertSuccess(Native.NativeUnix.nc_put_var_long(ncid, varid, values), "nc_put_var_long");
+        }
+
+        private static void GetVarLong(int ncid, int varid, long[] destination)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                int[] i32 = new int[destination.Length];
+                AssertSuccess(Native.NativeWindows.nc_get_vara_long(ncid, varid, Ix(0), Ix(destination.Length), i32), "nc_get_var_long");
+                for (int i = 0; i < i32.Length; i++)
+                {
+                    destination[i] = i32[i];
+                }
+
+                return;
+            }
+
+            AssertSuccess(Native.NativeUnix.nc_get_vara_long(ncid, varid, Ix(0), Ix(destination.Length), destination), "nc_get_var_long");
+        }
+
+        private static void PutVar1Long(int ncid, int varid, int index, long value)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                int i32 = checked((int)value);
+                AssertSuccess(Native.NativeWindows.nc_put_var1_long(ncid, varid, Ix(index), ref i32), "nc_put_var1_long");
+                return;
+            }
+
+            AssertSuccess(Native.NativeUnix.nc_put_var1_long(ncid, varid, Ix(index), ref value), "nc_put_var1_long");
+        }
+
+        private static void GetVar1Long(int ncid, int varid, int index, out long value)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                AssertSuccess(Native.NativeWindows.nc_get_var1_long(ncid, varid, Ix(index), out int i32), "nc_get_var1_long");
+                value = i32;
+                return;
+            }
+
+            AssertSuccess(Native.NativeUnix.nc_get_var1_long(ncid, varid, Ix(index), out long i64), "nc_get_var1_long");
+            value = i64;
+        }
+
+        private static void PutVaraLong(int ncid, int varid, int start, int count, long[] values)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                int[] i32 = Array.ConvertAll(values, checked(v => (int)v));
+                AssertSuccess(Native.NativeWindows.nc_put_vara_long(ncid, varid, Ix(start), Ix(count), i32), "nc_put_vara_long");
+                return;
+            }
+
+            AssertSuccess(Native.NativeUnix.nc_put_vara_long(ncid, varid, Ix(start), Ix(count), values), "nc_put_vara_long");
+        }
+
+        private static void GetVaraLong(int ncid, int varid, int start, int count, long[] destination)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                int[] i32 = new int[destination.Length];
+                AssertSuccess(Native.NativeWindows.nc_get_vara_long(ncid, varid, Ix(start), Ix(count), i32), "nc_get_vara_long");
+                for (int i = 0; i < i32.Length; i++)
+                {
+                    destination[i] = i32[i];
+                }
+
+                return;
+            }
+
+            AssertSuccess(Native.NativeUnix.nc_get_vara_long(ncid, varid, Ix(start), Ix(count), destination), "nc_get_vara_long");
+        }
+
+        private static void PutVarsLong(int ncid, int varid, int start, int count, int stride, long[] values)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                int[] i32 = Array.ConvertAll(values, checked(v => (int)v));
+                AssertSuccess(Native.NativeWindows.nc_put_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), i32), "nc_put_vars_long");
+                return;
+            }
+
+            AssertSuccess(Native.NativeUnix.nc_put_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), values), "nc_put_vars_long");
+        }
+
+        private static void GetVarsLong(int ncid, int varid, int start, int count, int stride, long[] destination)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                int[] i32 = new int[destination.Length];
+                AssertSuccess(Native.NativeWindows.nc_get_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), i32), "nc_get_vars_long");
+                for (int i = 0; i < i32.Length; i++)
+                {
+                    destination[i] = i32[i];
+                }
+
+                return;
+            }
+
+            AssertSuccess(Native.NativeUnix.nc_get_vars_long(ncid, varid, Ix(start), Ix(count), Stride(stride), destination), "nc_get_vars_long");
         }
     }
 }

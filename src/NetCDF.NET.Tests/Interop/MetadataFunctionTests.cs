@@ -92,7 +92,7 @@ public sealed class MetadataFunctionTests
         }
         finally
         {
-            InteropTestCommon.AssertSuccess(Native.nc_free_string((IntPtr)ptrs.Length, ptrs), "nc_free_string");
+            InteropTestCommon.AssertSuccess(Native.nc_free_string((nuint)ptrs.Length, ptrs), "nc_free_string");
         }
     }
 

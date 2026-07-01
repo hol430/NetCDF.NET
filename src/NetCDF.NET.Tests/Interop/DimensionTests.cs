@@ -1,4 +1,3 @@
-using System.Text;
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
 
@@ -54,10 +53,10 @@ public sealed class DimensionTests
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "time", (nuint)4, out int dimid), "nc_def_dim");
 
-        var name = new StringBuilder(256);
+        byte[] name = new byte[256];
         InteropTestCommon.AssertSuccess(Native.nc_inq_dim(hnd.Id, dimid, name, out nuint len), "nc_inq_dim");
 
-        Assert.Equal("time", name.ToString());
+        Assert.Equal("time", DecodeCString(name));
         Assert.Equal((nuint)4, len);
     }
 
@@ -71,13 +70,13 @@ public sealed class DimensionTests
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "values", NCType.NC_INT, 2, [timeDimId, xDimId], out int varId), "nc_def_var");
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
-        IntPtr[] firstStart = [(IntPtr)0, (IntPtr)0];
-        IntPtr[] firstCount = [(IntPtr)1, (IntPtr)3];
+        nuint[] firstStart = [(nuint)0, (nuint)0];
+        nuint[] firstCount = [(nuint)1, (nuint)3];
         int[] firstRow = [1, 2, 3];
         InteropTestCommon.AssertSuccess(Native.nc_put_vara_int(hnd.Id, varId, firstStart, firstCount, firstRow), "nc_put_vara_int(first)");
 
-        IntPtr[] secondStart = [(IntPtr)1, (IntPtr)0];
-        IntPtr[] secondCount = [(IntPtr)1, (IntPtr)3];
+        nuint[] secondStart = [(nuint)1, (nuint)0];
+        nuint[] secondCount = [(nuint)1, (nuint)3];
         int[] secondRow = [4, 5, 6];
         InteropTestCommon.AssertSuccess(Native.nc_put_vara_int(hnd.Id, varId, secondStart, secondCount, secondRow), "nc_put_vara_int(second)");
 
@@ -100,5 +99,12 @@ public sealed class DimensionTests
         int[] actual = new int[6];
         InteropTestCommon.AssertSuccess(Native.nc_get_var_int(read.Id, varId, actual), "nc_get_var_int");
         Assert.Equal(new[] { 1, 2, 3, 4, 5, 6 }, actual);
+    }
+
+    private static string DecodeCString(byte[] bytes)
+    {
+        int nul = Array.IndexOf(bytes, (byte)0);
+        int len = nul >= 0 ? nul : bytes.Length;
+        return System.Text.Encoding.ASCII.GetString(bytes, 0, len);
     }
 }

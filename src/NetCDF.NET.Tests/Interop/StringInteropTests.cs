@@ -46,7 +46,7 @@ public sealed class StringInteropTests
         }
         finally
         {
-            InteropTestCommon.AssertSuccess(Native.nc_free_string((IntPtr)ptrs.Length, ptrs), "nc_free_string");
+            InteropTestCommon.AssertSuccess(Native.nc_free_string((nuint)ptrs.Length, ptrs), "nc_free_string");
         }
     }
 
@@ -67,12 +67,12 @@ public sealed class StringInteropTests
 
         byte[] block = [(byte)'1', (byte)'2'];
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_vara_text(hnd.Id, varId, [(IntPtr)3], [(IntPtr)2], block),
+            Native.nc_put_vara_text(hnd.Id, varId, [(nuint)3], [(nuint)2], block),
             "nc_put_vara_text");
 
         byte[] strideWrite = [(byte)'Q', (byte)'R'];
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_vars_text(hnd.Id, varId, [(IntPtr)0], [(IntPtr)2], [(IntPtr)2], strideWrite),
+            Native.nc_put_vars_text(hnd.Id, varId, [(nuint)0], [(nuint)2], [(nint)2], strideWrite),
             "nc_put_vars_text");
 
         byte[] full = new byte[initial.Length];
@@ -83,14 +83,14 @@ public sealed class StringInteropTests
 
         byte[] subset = new byte[2];
         InteropTestCommon.AssertSuccess(
-            Native.nc_get_vara_text(hnd.Id, varId, [(IntPtr)3], [(IntPtr)2], subset),
+            Native.nc_get_vara_text(hnd.Id, varId, [(nuint)3], [(nuint)2], subset),
             "nc_get_vara_text");
         Assert.Equal(full[3], subset[0]);
         Assert.Equal(full[4], subset[1]);
 
         byte[] strided = new byte[2];
         InteropTestCommon.AssertSuccess(
-            Native.nc_get_vars_text(hnd.Id, varId, [(IntPtr)0], [(IntPtr)2], [(IntPtr)2], strided),
+            Native.nc_get_vars_text(hnd.Id, varId, [(nuint)0], [(nuint)2], [(nint)2], strided),
             "nc_get_vars_text");
         Assert.Equal(full[0], strided[0]);
         Assert.Equal(full[2], strided[1]);

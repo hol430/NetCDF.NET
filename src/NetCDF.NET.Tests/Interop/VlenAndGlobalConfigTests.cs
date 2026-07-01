@@ -15,9 +15,9 @@ public sealed class VlenAndGlobalConfigTests
         int defStatus = Native.nc_def_vlen(hnd.Id, "int_list_t", NCType.NC_INT, out NCType vlenTypeId);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(defStatus, "nc_def_vlen");
 
-        var name = new StringBuilder(256);
+        byte[] name = new byte[256];
         InteropTestCommon.AssertSuccess(Native.nc_inq_vlen(hnd.Id, vlenTypeId, name, out IntPtr datumSize, out NCType baseType), "nc_inq_vlen");
-        Assert.Equal("int_list_t", name.ToString());
+        Assert.Equal("int_list_t", DecodeCString(name));
         Assert.Equal(NCType.NC_INT, baseType);
         Assert.Equal((IntPtr.Size * 2), datumSize.ToInt64());
 
@@ -133,7 +133,14 @@ public sealed class VlenAndGlobalConfigTests
         }
         finally
         {
-            InteropTestCommon.AssertSuccess(Native.nc_free_string((IntPtr)ptrs.Length, ptrs), "nc_free_string");
+            InteropTestCommon.AssertSuccess(Native.nc_free_string((nuint)ptrs.Length, ptrs), "nc_free_string");
         }
+    }
+
+    private static string DecodeCString(byte[] bytes)
+    {
+        int nul = Array.IndexOf(bytes, (byte)0);
+        int len = nul >= 0 ? nul : bytes.Length;
+        return Encoding.ASCII.GetString(bytes, 0, len);
     }
 }

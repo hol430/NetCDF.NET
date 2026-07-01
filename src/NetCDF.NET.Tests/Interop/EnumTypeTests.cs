@@ -19,9 +19,9 @@ public sealed class EnumTypeTests
         InteropTestCommon.AssertSuccess(Native.nc_insert_enum(hnd.Id, enumTypeId, "GREEN", ref green), "nc_insert_enum(GREEN)");
         InteropTestCommon.AssertSuccess(Native.nc_insert_enum(hnd.Id, enumTypeId, "BLUE", ref blue), "nc_insert_enum(BLUE)");
 
-        var enumName = new StringBuilder(256);
+        byte[] enumName = new byte[256];
         InteropTestCommon.AssertSuccess(Native.nc_inq_enum(hnd.Id, enumTypeId, enumName, out NCType baseType, out IntPtr baseSize, out int memberCount), "nc_inq_enum");
-        Assert.Equal("color_t", enumName.ToString());
+        Assert.Equal("color_t", DecodeCString(enumName));
         Assert.Equal(NCType.NC_INT, baseType);
         Assert.Equal(sizeof(int), baseSize.ToInt64());
         Assert.Equal(3, memberCount);
@@ -39,9 +39,9 @@ public sealed class EnumTypeTests
         Assert.Equal(2, members["GREEN"]);
         Assert.Equal(3, members["BLUE"]);
 
-        var ident = new StringBuilder(256);
+        byte[] ident = new byte[256];
         InteropTestCommon.AssertSuccess(Native.nc_inq_enum_ident(hnd.Id, enumTypeId, 2, ident), "nc_inq_enum_ident");
-        Assert.Equal("GREEN", ident.ToString());
+        Assert.Equal("GREEN", DecodeCString(ident));
     }
 
     private static string DecodeCString(byte[] bytes)

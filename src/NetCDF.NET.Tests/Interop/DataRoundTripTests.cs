@@ -61,8 +61,8 @@ public sealed class DataRoundTripTests
 
         AssertSuccess(Native.nc_put_var_int(hnd.Id, varId, all), "nc_put_var_int(init)");
 
-        IntPtr[] start = [(IntPtr)2];
-        IntPtr[] count = [(IntPtr)3];
+        nuint[] start = [(nuint)2];
+        nuint[] count = [(nuint)3];
         int[] subset = [9, 8, 7];
         AssertSuccess(Native.nc_put_vara_int(hnd.Id, varId, start, count, subset), "nc_put_vara_int");
 
@@ -92,8 +92,8 @@ public sealed class DataRoundTripTests
         using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
         AssertSuccess(Native.nc_inq_varid(read.Id, "ints", out varId), "nc_inq_varid");
 
-        IntPtr[] start = [(IntPtr)1];
-        IntPtr[] count = [(IntPtr)3];
+        nuint[] start = [(nuint)1];
+        nuint[] count = [(nuint)3];
         int[] actual = new int[3];
         AssertSuccess(Native.nc_get_vara_int(read.Id, varId, start, count, actual), "nc_get_vara_int");
         Assert.Equal(new[] { 20, 30, 40 }, actual);

@@ -115,7 +115,7 @@ public sealed class VariableTests
     }
 
     [Fact]
-    public void DefVarFill_AndInqVarFill_RoundTrip()
+    public unsafe void DefVarFill_AndInqVarFill_RoundTrip()
     {
         using var temp = new TempFile();
         using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
@@ -123,10 +123,11 @@ public sealed class VariableTests
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)8, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
 
-        InteropTestCommon.AssertSuccess(Native.nc_def_var_fill(hnd.Id, varId, NcNoFill, 0), "nc_def_var_fill");
+        InteropTestCommon.AssertSuccess(Native.nc_def_var_fill(hnd.Id, varId, NcNoFill, null), "nc_def_var_fill");
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
-        InteropTestCommon.AssertSuccess(Native.nc_inq_var_fill(hnd.Id, varId, out int noFill, out int actualFillValue), "nc_inq_var_fill");
+        int actualFillValue = 0;
+        InteropTestCommon.AssertSuccess(Native.nc_inq_var_fill(hnd.Id, varId, out int noFill, &actualFillValue), "nc_inq_var_fill");
         Assert.Equal(NcNoFill, noFill);
     }
 

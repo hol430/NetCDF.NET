@@ -27,9 +27,9 @@ public sealed class UserTypeInquiryTests
         Assert.Equal(ntypes, ntypesAgain);
         Assert.Contains((int)typeId, typeIds);
 
-        var inqName = new StringBuilder(256);
+        byte[] inqName = new byte[256];
         InteropTestCommon.AssertSuccess(Native.nc_inq_type(hnd.Id, typeId, inqName, out nuint inqSize), "nc_inq_type_untested");
-        Assert.Equal("compound_t", inqName.ToString());
+        Assert.Equal("compound_t", DecodeCString(inqName));
         Assert.Equal((nuint)4, inqSize);
 
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
@@ -40,13 +40,20 @@ public sealed class UserTypeInquiryTests
         InteropTestCommon.AssertSuccess(Native.nc_inq_type_equal(hnd.Id, typeId, hnd.Id, NCType.NC_INT, out int equalInt), "nc_inq_type_equal(int)");
         Assert.Equal(0, equalInt);
 
-        var userTypeName = new StringBuilder(256);
+        byte[] userTypeName = new byte[256];
         InteropTestCommon.AssertSuccess(
-            Native.nc_inq_user_type(hnd.Id, typeId, userTypeName, out IntPtr userTypeSize, out NCType baseType, out int nfields, out int classp),
+            Native.nc_inq_user_type(hnd.Id, typeId, userTypeName, out nuint userTypeSize, out NCType baseType, out int nfields, out int classp),
             "nc_inq_user_type");
-        Assert.Equal("compound_t", userTypeName.ToString());
-        Assert.Equal(4, userTypeSize.ToInt64());
+        Assert.Equal("compound_t", DecodeCString(userTypeName));
+        Assert.Equal((nuint)4, userTypeSize);
         Assert.Equal(1, nfields);
         Assert.Equal((int)NCType.NC_COMPOUND, classp);
+    }
+
+    private static string DecodeCString(byte[] bytes)
+    {
+        int nul = Array.IndexOf(bytes, (byte)0);
+        int len = nul >= 0 ? nul : bytes.Length;
+        return Encoding.ASCII.GetString(bytes, 0, len);
     }
 }

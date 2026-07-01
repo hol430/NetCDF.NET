@@ -1,4 +1,3 @@
-using System.Text;
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
 
@@ -49,9 +48,9 @@ public sealed class GroupTests
         InteropTestCommon.AssertSuccess(Native.nc_inq_grp_full_ncid(hnd.Id, "/parent/child", out int childByFullPath), "nc_inq_grp_full_ncid");
         Assert.Equal(childId, childByFullPath);
 
-        var groupName = new StringBuilder(256);
+        byte[] groupName = new byte[256];
         InteropTestCommon.AssertSuccess(Native.nc_inq_grpname(childId, groupName), "nc_inq_grpname");
-        Assert.Equal("child", groupName.ToString());
+        Assert.Equal("child", DecodeCString(groupName));
     }
 
     [Fact]
@@ -87,10 +86,10 @@ public sealed class GroupTests
         InteropTestCommon.AssertSuccess(Native.nc_inq_grpname_len(childId, out nuint len), "nc_inq_grpname_len(child)");
         Assert.Equal((nuint)13, len); // "/parent/child"
 
-        var fullName = new StringBuilder((int)len + 1);
+        byte[] fullName = new byte[(int)len + 1];
         InteropTestCommon.AssertSuccess(Native.nc_inq_grpname_full(childId, out nuint lenAgain, fullName), "nc_inq_grpname_full(child)");
         Assert.Equal(len, lenAgain);
-        Assert.Equal("/parent/child", fullName.ToString());
+        Assert.Equal("/parent/child", DecodeCString(fullName));
     }
 
     [Fact]
@@ -163,8 +162,15 @@ public sealed class GroupTests
         int oldNameStatus = Native.nc_inq_grp_ncid(hnd.Id, "old_name", out _);
         Assert.NotEqual(InteropTestCommon.NcNoErr, oldNameStatus);
 
-        var groupName = new StringBuilder(256);
+        byte[] groupName = new byte[256];
         InteropTestCommon.AssertSuccess(Native.nc_inq_grpname(grpId, groupName), "nc_inq_grpname(new_name)");
-        Assert.Equal("new_name", groupName.ToString());
+        Assert.Equal("new_name", DecodeCString(groupName));
+    }
+
+    private static string DecodeCString(byte[] bytes)
+    {
+        int nul = Array.IndexOf(bytes, (byte)0);
+        int len = nul >= 0 ? nul : bytes.Length;
+        return System.Text.Encoding.ASCII.GetString(bytes, 0, len);
     }
 }

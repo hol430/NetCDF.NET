@@ -43,11 +43,11 @@ public sealed class UntestedFunctionTests
     {
         using NcTempFile hnd = new();
 
-        InteropTestCommon.AssertSuccess(Native.nc_inq_path(hnd.Id, out IntPtr len, null), "nc_inq_path(count)");
-        Assert.True(len.ToInt64() > 0);
+        InteropTestCommon.AssertSuccess(Native.nc_inq_path(hnd.Id, out nuint len, null), "nc_inq_path(count)");
+        Assert.True(len > 0);
 
-        byte[] buffer = new byte[len.ToInt64() + 1];
-        InteropTestCommon.AssertSuccess(Native.nc_inq_path(hnd.Id, out IntPtr lenAgain, buffer), "nc_inq_path(path)");
+        byte[] buffer = new byte[(int)len + 1];
+        InteropTestCommon.AssertSuccess(Native.nc_inq_path(hnd.Id, out nuint lenAgain, buffer), "nc_inq_path(path)");
         Assert.Equal(len, lenAgain);
 
         string actual = Encoding.UTF8.GetString(buffer, 0, (int)lenAgain).TrimEnd('\0');
@@ -129,7 +129,7 @@ public sealed class UntestedFunctionTests
         try
         {
             InteropTestCommon.AssertSuccess(
-                Native.nc_get_vara_string(hnd.Id, varId, [(IntPtr)1], [(IntPtr)2], ptrs),
+                Native.nc_get_vara_string(hnd.Id, varId, [(nuint)1], [(nuint)2], ptrs),
                 "nc_get_vara_string");
 
             string[] actual = ptrs.Select(p => Marshal.PtrToStringAnsi(p) ?? string.Empty).ToArray();
@@ -137,7 +137,7 @@ public sealed class UntestedFunctionTests
         }
         finally
         {
-            InteropTestCommon.AssertSuccess(Native.nc_free_string((IntPtr)ptrs.Length, ptrs), "nc_free_string");
+            InteropTestCommon.AssertSuccess(Native.nc_free_string((nuint)ptrs.Length, ptrs), "nc_free_string");
         }
     }
 }
