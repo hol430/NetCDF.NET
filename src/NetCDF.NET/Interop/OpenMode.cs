@@ -26,6 +26,11 @@ public enum OpenMode : int
     NC_SHARE = 0x0800,
 
     /// <summary>
+    /// Use MPI-IO for parallel access. Mode flag for nc_open_par().
+    /// </summary>
+    NC_MPIIO = 0x2000,
+
+    /// <summary>
     /// Read from memory. Mode flag for nc_open() or nc_create().
     /// </summary>
     NC_INMEMORY = 0x8000

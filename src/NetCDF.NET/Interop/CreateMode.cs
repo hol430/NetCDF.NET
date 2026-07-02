@@ -8,6 +8,7 @@ namespace NetCDF.Interop;
 /// NC_64BIT_OFFSET (create 64-bit offset file),
 /// NC_64BIT_DATA (alias NC_CDF5) (create CDF-5 file),
 /// NC_NETCDF4 (create netCDF-4/HDF5 file),
+/// NC_MPIIO (use MPI-IO for parallel access),
 /// NC_CLASSIC_MODEL (enforce netCDF classic mode on netCDF-4/HDF5 files),
 /// NC_DISKLESS (store data in memory), and NC_PERSIST (force the NC_DISKLESS data from memory to a file),
 /// NC_MMAP (use MMAP for NC_DISKLESS instead of NC_INMEMORY – deprecated).
@@ -58,6 +59,11 @@ public enum CreateMode : int
     /// Use netCDF-4/HDF5 format. Mode flag for nc_create().
     /// </summary>
     NC_NETCDF4 = 0x1000,
+
+    /// <summary>
+    /// Use MPI-IO for parallel access. Mode flag for nc_create_par().
+    /// </summary>
+    NC_MPIIO = 0x2000,
 
     /// <summary>
     /// Save diskless contents to disk. Mode flag for nc_open() or nc_create().
