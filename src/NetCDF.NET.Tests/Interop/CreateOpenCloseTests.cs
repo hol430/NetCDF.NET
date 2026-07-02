@@ -1,5 +1,6 @@
 using System.Formats.Asn1;
 using System.Runtime.InteropServices;
+using System.Text;
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
 
@@ -123,5 +124,67 @@ public sealed class CreateOpenCloseTests
 
         InteropTestCommon.AssertSuccess(Native.nc_inq_nvars(hnd.Id, out int nvars), "nc_inq_nvars");
         Assert.Equal(1, nvars);
+    }
+
+    [Fact]
+    public void NcCreateMem_CreatesDataset_WhenSupported()
+    {
+        string path = "mem.nc";
+        int status = Native.nc_create_mem(path, CreateMode.NC_CLOBBER, 0, out int ncid);
+        InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(status, "nc_create_mem");
+
+        try
+        {
+            InteropTestCommon.AssertSuccess(Native.nc_def_dim(ncid, "x", (nuint)2, out int dimId), "nc_def_dim");
+            InteropTestCommon.AssertSuccess(Native.nc_def_var(ncid, "v", NCType.NC_INT, 1, [dimId], out _), "nc_def_var");
+        }
+        finally
+        {
+            InteropTestCommon.AssertSuccess(Native.nc_close(ncid), "nc_close");
+        }
+        Assert.False(File.Exists(path));
+    }
+
+    [Fact]
+    public void NcAbort_AfterCreateInvalidatesHandle()
+    {
+        using var temp = new TempFile();
+
+        InteropTestCommon.AssertSuccess(Native.nc_create(temp.FilePath, CreateMode.NC_CLOBBER, out int ncid), "nc_create");
+        InteropTestCommon.AssertSuccess(Native.nc_abort(ncid), "nc_abort");
+
+        int statusAfterAbort = Native.nc_inq_ndims(ncid, out _);
+        Assert.NotEqual(InteropTestCommon.NcNoErr, statusAfterAbort);
+    }
+
+    [Fact]
+    public void NcInqPath_ReturnsOpenedFilePath()
+    {
+        using NcTempFile hnd = new();
+
+        InteropTestCommon.AssertSuccess(Native.nc_inq_path(hnd.Id, out nuint len, null), "nc_inq_path(count)");
+        Assert.True(len > 0);
+
+        byte[] buffer = new byte[(int)len + 1];
+        InteropTestCommon.AssertSuccess(Native.nc_inq_path(hnd.Id, out nuint lenAgain, buffer), "nc_inq_path(path)");
+        Assert.Equal(len, lenAgain);
+
+        string actual = Encoding.UTF8.GetString(buffer, 0, (int)lenAgain).TrimEnd('\0');
+        Assert.Equal(hnd.Path, actual);
+    }
+
+    [Fact]
+    public void NcSetFill_TogglesAndReturnsPreviousMode()
+    {
+        using NcTempFile hnd = new();
+
+        const int ncFill = 0;
+        const int ncNoFill = 0x100;
+
+        InteropTestCommon.AssertSuccess(Native.nc_set_fill(hnd.Id, ncNoFill, out int oldMode1), "nc_set_fill(no_fill)");
+        InteropTestCommon.AssertSuccess(Native.nc_set_fill(hnd.Id, ncFill, out int oldMode2), "nc_set_fill(fill)");
+
+        Assert.Equal(ncNoFill, oldMode2);
+        Assert.True(oldMode1 == ncFill || oldMode1 == ncNoFill);
     }
 }

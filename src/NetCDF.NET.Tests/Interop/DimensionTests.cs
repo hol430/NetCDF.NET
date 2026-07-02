@@ -1,3 +1,4 @@
+using System.Text;
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
 
@@ -99,6 +100,21 @@ public sealed class DimensionTests
         int[] actual = new int[6];
         InteropTestCommon.AssertSuccess(Native.nc_get_var_int(read.Id, varId, actual), "nc_get_var_int");
         Assert.Equal(new[] { 1, 2, 3, 4, 5, 6 }, actual);
+    }
+
+    [Fact]
+    public void NcInqDimname_ReturnsDimensionName()
+    {
+        using NcTempFile hnd = new();
+
+        InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "time", (nuint)4, out int dimId), "nc_def_dim");
+        byte[] nameBuffer = new byte[256];
+        InteropTestCommon.AssertSuccess(Native.nc_inq_dimname(hnd.Id, dimId, nameBuffer), "nc_inq_dimname");
+
+        int nulIndex = Array.IndexOf(nameBuffer, (byte)0);
+        int length = nulIndex >= 0 ? nulIndex : nameBuffer.Length;
+        string actual = Encoding.ASCII.GetString(nameBuffer, 0, length);
+        Assert.Equal("time", actual);
     }
 
     private static string DecodeCString(byte[] bytes)

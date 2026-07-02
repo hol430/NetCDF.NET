@@ -50,6 +50,19 @@ public sealed class UserTypeInquiryTests
         Assert.Equal((int)NCType.NC_COMPOUND, classp);
     }
 
+    [Fact]
+    public void NcInqType_ForAtomicInt_ReturnsExpectedNameAndSize()
+    {
+        using NcTempFile hnd = new();
+
+        byte[] name = new byte[64];
+        InteropTestCommon.AssertSuccess(Native.nc_inq_type(hnd.Id, NCType.NC_INT, name, out nuint size), "nc_inq_type");
+
+        Assert.Equal((nuint)sizeof(int), size);
+        string typeName = Encoding.ASCII.GetString(name).TrimEnd('\0').ToLowerInvariant();
+        Assert.Contains("int", typeName);
+    }
+
     private static string DecodeCString(byte[] bytes)
     {
         int nul = Array.IndexOf(bytes, (byte)0);

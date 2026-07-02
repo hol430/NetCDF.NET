@@ -198,4 +198,25 @@ public sealed class VariableTests
         Assert.Equal(optionsMask, actualOptionsMask);
         Assert.Equal(pixelsPerBlock, actualPixelsPerBlock);
     }
+
+    [Fact]
+    public void NcDefVarFilter_InvalidFilterId_ReturnsErrorOrFeatureUnavailable()
+    {
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
+
+        InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)3, out int dimId), "nc_def_dim");
+        InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
+
+        int status = Native.nc_def_var_filter(hnd.Id, varId, uint.MaxValue, 1, [42u]);
+        if (status == InteropTestCommon.NcEnotBuilt || status == InteropTestCommon.NcEnotNc4 || status == InteropTestCommon.NcEfilter)
+        {
+            InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(
+                status,
+                "nc_def_var_filter",
+                InteropTestCommon.FeatureFilters,
+                InteropTestCommon.NcEfilter);
+        }
+
+        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+    }
 }

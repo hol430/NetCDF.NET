@@ -8,7 +8,7 @@
 Do not require “every native function” in the first pass. Start with a curated,
 core supported surface and expand.
 
-### P0 (implement now)
+### P0 (done)
 
 - File lifecycle: `nc_create`, `nc_open`, `nc_close`, `nc_sync`, `nc_enddef`
 - Basic metadata inquiry: `nc_inq`, `nc_inq_ndims`, `nc_inq_nvars`
@@ -18,20 +18,20 @@ core supported surface and expand.
 - Data round-trip for core primitive types (`int`, `float`, `double`, etc.)
 - Core error behavior (missing file, invalid ids/names)
 
-### P1 (next)
+### P1 (done)
 
 - Groups (`nc_def_grp`, `nc_inq_grps`, parent/child lookups)
 - Unlimited-dimension multi-dim behavior
 - Chunking/cache/filter inquiry paths (where library support exists)
 - More attribute/data type combinations
 
-### Deferred
+### P2 (done)
 
 - User-defined types (`compound`, `enum`, `vlen`)
 - Any API currently marked untested/incomplete in `Native.cs`
 - Highly version/backend-specific paths not stable across installs
 
-## 2. Round-Trip Principle (No Golden Files in V1)
+## 2. Round-Trip Principle (No Golden Files in V1) (done)
 
 For this phase, validate with round-trip correctness only.
 
@@ -55,7 +55,7 @@ nc_get_var*(...)
 
 This is acceptable and expected for interop validation.
 
-## 3. Verify Semantic Facts, Not Bytes
+## 3. Verify Semantic Facts, Not Bytes (done)
 
 Do not compare NetCDF files byte-for-byte. Verify semantic facts:
 
@@ -65,7 +65,7 @@ Do not compare NetCDF files byte-for-byte. Verify semantic facts:
 - attribute names, types, and values
 - data values round-trip correctly
 
-## 4. Required Pattern for Count+Array APIs
+## 4. Required Pattern for Count+Array APIs (done)
 
 For APIs that take `(out count, arrayPtr)` (for example `nc_inq_unlimdims`,
 `nc_inq_grps`, and similar patterns):
@@ -78,7 +78,7 @@ For APIs that take `(out count, arrayPtr)` (for example `nc_inq_unlimdims`,
 This pattern is mandatory in tests because it catches pointer/array marshaling
 mistakes.
 
-## 5. Negative Tests
+## 5. Negative Tests (done)
 
 Negative tests are high-value for binding correctness.
 
@@ -94,7 +94,7 @@ Guidance:
 - Where code may vary by backend/version, assert `status != NC_NOERR` and
   include `nc_strerror(status)` in assertion messages.
 
-## 6. Environment/Feature Gating
+## 6. Environment/Feature Gating (done)
 
 Tests must distinguish:
 

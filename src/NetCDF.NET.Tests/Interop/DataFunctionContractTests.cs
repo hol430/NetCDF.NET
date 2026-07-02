@@ -119,6 +119,30 @@ public sealed class DataFunctionContractTests
         }
     }
 
+    [Fact]
+    public void NcGetVaraString_ReadsSlice_AndFreesReturnedStrings()
+    {
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
+
+        string[] all = ["zero", "one", "two", "three"];
+        AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)all.Length, out int dimId), "nc_def_dim");
+        AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_STRING, 1, [dimId], out int varId), "nc_def_var");
+        AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_put_var_string(hnd.Id, varId, all), "nc_put_var_string");
+
+        IntPtr[] ptrs = new IntPtr[2];
+        try
+        {
+            AssertSuccess(Native.nc_get_vara_string(hnd.Id, varId, [(nuint)1], [(nuint)2], ptrs), "nc_get_vara_string");
+            string[] actual = ptrs.Select(p => Marshal.PtrToStringAnsi(p) ?? string.Empty).ToArray();
+            Assert.Equal(["one", "two"], actual);
+        }
+        finally
+        {
+            AssertSuccess(Native.nc_free_string((nuint)ptrs.Length, ptrs), "nc_free_string");
+        }
+    }
+
     private sealed class Box<T>
     {
         public T Value = default!;
