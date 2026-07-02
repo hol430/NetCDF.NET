@@ -86,7 +86,11 @@ public sealed class VariableTests
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
 
         int deflateStatus = Native.nc_def_var_deflate(hnd.Id, varId, 1, 1, 2);
-        InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(deflateStatus, "nc_def_var_deflate", InteropTestCommon.NcEfilter);
+        InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(
+            deflateStatus,
+            "nc_def_var_deflate",
+            InteropTestCommon.FeatureFilters,
+            InteropTestCommon.NcEfilter);
 
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
@@ -99,6 +103,7 @@ public sealed class VariableTests
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(
             genericFilterStatus,
             "nc_inq_var_filter(count)",
+            InteropTestCommon.FeatureFilters,
             InteropTestCommon.NcEnoFilter,
             InteropTestCommon.NcEfilter);
 
@@ -141,7 +146,11 @@ public sealed class VariableTests
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
 
         int setStatus = Native.nc_def_var_fletcher32(hnd.Id, varId, NcFletcher32On);
-        InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(setStatus, "nc_def_var_fletcher32", InteropTestCommon.NcEfilter);
+        InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(
+            setStatus,
+            "nc_def_var_fletcher32",
+            InteropTestCommon.FeatureFilters,
+            InteropTestCommon.NcEfilter);
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
         InteropTestCommon.AssertSuccess(Native.nc_inq_var_fletcher32(hnd.Id, varId, out int fletcher32), "nc_inq_var_fletcher32");
@@ -177,7 +186,11 @@ public sealed class VariableTests
         const int optionsMask = 32;
         const int pixelsPerBlock = 8;
         int setStatus = Native.nc_def_var_szip(hnd.Id, varId, optionsMask, pixelsPerBlock);
-        InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(setStatus, "nc_set_var_szip", InteropTestCommon.NcEfilter);
+        InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(
+            setStatus,
+            "nc_set_var_szip",
+            InteropTestCommon.FeatureFilters,
+            InteropTestCommon.NcEfilter);
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
         int inqStatus = Native.nc_inq_var_szip(hnd.Id, varId, out int actualOptionsMask, out int actualPixelsPerBlock);

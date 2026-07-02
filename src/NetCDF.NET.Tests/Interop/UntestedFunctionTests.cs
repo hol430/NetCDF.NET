@@ -108,7 +108,11 @@ public sealed class UntestedFunctionTests
         int status = Native.nc_def_var_filter(hnd.Id, varId, uint.MaxValue, 1, [42u]);
         if (status == InteropTestCommon.NcEnotBuilt || status == InteropTestCommon.NcEnotNc4 || status == InteropTestCommon.NcEfilter)
         {
-            return;
+            InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(
+                status,
+                "nc_def_var_filter",
+                InteropTestCommon.FeatureFilters,
+                InteropTestCommon.NcEfilter);
         }
 
         Assert.NotEqual(InteropTestCommon.NcNoErr, status);
