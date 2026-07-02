@@ -169,10 +169,5 @@ public sealed class MpiInteropTests
             reason = $"MPI library not found: {ex.Message}";
             return false;
         }
-        catch (EntryPointNotFoundException ex)
-        {
-            reason = $"MPI symbol not found: {ex.Message}";
-            return false;
-        }
     }
 }

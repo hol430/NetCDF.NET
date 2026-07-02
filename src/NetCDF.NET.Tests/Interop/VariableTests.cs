@@ -176,29 +176,13 @@ public sealed class VariableTests
 
         const int optionsMask = 32;
         const int pixelsPerBlock = 8;
-        int setStatus;
-        try
-        {
-            setStatus = Native.nc_set_var_szip(hnd.Id, varId, optionsMask, pixelsPerBlock);
-        }
-        catch (EntryPointNotFoundException)
-        {
-            return;
-        }
+        int setStatus = Native.nc_def_var_szip(hnd.Id, varId, optionsMask, pixelsPerBlock);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(setStatus, "nc_set_var_szip", InteropTestCommon.NcEfilter);
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
-        int inqStatus;
-        try
-        {
-            inqStatus = Native.nc_inq_var_szip(hnd.Id, varId, out int actualOptionsMask, out int actualPixelsPerBlock);
-            InteropTestCommon.AssertSuccess(inqStatus, "nc_inq_var_szip");
-            Assert.Equal(optionsMask, actualOptionsMask);
-            Assert.Equal(pixelsPerBlock, actualPixelsPerBlock);
-        }
-        catch (EntryPointNotFoundException)
-        {
-            return;
-        }
+        int inqStatus = Native.nc_inq_var_szip(hnd.Id, varId, out int actualOptionsMask, out int actualPixelsPerBlock);
+        InteropTestCommon.AssertSuccess(inqStatus, "nc_inq_var_szip");
+        Assert.Equal(optionsMask, actualOptionsMask);
+        Assert.Equal(pixelsPerBlock, actualPixelsPerBlock);
     }
 }

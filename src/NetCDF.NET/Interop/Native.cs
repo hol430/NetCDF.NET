@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
-using NetCDF.Interop.Marshalling;
 
 using MPI_Comm = System.IntPtr;
 using MPI_Info = System.IntPtr;
@@ -274,7 +273,7 @@ public static partial class Native
     /// <summary>Set szip compression settings on a variable.</summary>
     [LibraryImport(library)]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    public static partial int nc_set_var_szip(int ncid, int varid, int options_maskp, int pixels_per_blockp);
+    public static partial int nc_def_var_szip(int ncid, int varid, int options_maskp, int pixels_per_blockp);
 
     /// <summary>Rename a variable.</summary>
     [LibraryImport(library, StringMarshalling = StringMarshalling.Utf8)]
@@ -668,7 +667,7 @@ public static partial class Native
 
     [LibraryImport(library, StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    public static partial int nc_put_var1_string(int ncid, int varid, [In] nuint[] index, string op);
+    public static partial int nc_put_var1_string(int ncid, int varid, [In] nuint[] index, [In] string[] op);
 
     [LibraryImport(library)]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
@@ -996,7 +995,7 @@ public static partial class Native
     /// <summary> Find out about a user defined type. </summary>
     [LibraryImport(library)]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    public static partial int nc_inq_user_type(int ncid, NCType xtype, [Out] byte[] name, out nuint size, out NCType base_NCTypep, out int nfieldsp, out int classp);
+    public static partial int nc_inq_user_type(int ncid, NCType xtype, [Out] byte[] name, out nuint size, out NCType base_NCTypep, out nuint nfieldsp, out int classp);
 
     /// <summary> Here are functions for dealing with compound types.  Create a compound type. </summary>
     [LibraryImport(library, StringMarshalling = StringMarshalling.Utf8)]
@@ -1084,7 +1083,7 @@ public static partial class Native
     /// <summary>Get information about an enum type: its name, base type and the number of members defined. </summary>
     [LibraryImport(library)]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    public static partial int nc_inq_enum(int ncid, NCType xtype, [Out] byte[] name, out NCType base_NCTypep, out IntPtr base_sizep, out int num_membersp);
+    public static partial int nc_inq_enum(int ncid, NCType xtype, [Out] byte[] name, out NCType base_NCTypep, out nuint base_sizep, out nuint num_membersp);
 
     /// <summary>Get information about an enum member</summary>
     [LibraryImport(library)]
@@ -1104,7 +1103,7 @@ public static partial class Native
     /// <summary> Find out about a vlen. </summary>
     [LibraryImport(library)]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    public static partial int nc_inq_vlen(int ncid, NCType xtype, [Out] byte[] name, out IntPtr datum_sizep, out NCType base_NCTypep);
+    public static partial int nc_inq_vlen(int ncid, NCType xtype, [Out] byte[] name, out nuint datum_sizep, out NCType base_NCTypep);
 
     /// <summary> When you read VLEN type the library will actually allocate the storage space for the data. This storage space must be freed, so pass the pointer back to this function, when you're done with the data, and it will free the vlen memory. </summary>
     [LibraryImport(library)]

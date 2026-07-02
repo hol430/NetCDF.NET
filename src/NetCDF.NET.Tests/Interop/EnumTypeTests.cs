@@ -20,14 +20,14 @@ public sealed class EnumTypeTests
         InteropTestCommon.AssertSuccess(Native.nc_insert_enum(hnd.Id, enumTypeId, "BLUE", ref blue), "nc_insert_enum(BLUE)");
 
         byte[] enumName = new byte[256];
-        InteropTestCommon.AssertSuccess(Native.nc_inq_enum(hnd.Id, enumTypeId, enumName, out NCType baseType, out IntPtr baseSize, out int memberCount), "nc_inq_enum");
+        InteropTestCommon.AssertSuccess(Native.nc_inq_enum(hnd.Id, enumTypeId, enumName, out NCType baseType, out nuint baseSize, out nuint memberCount), "nc_inq_enum");
         Assert.Equal("color_t", DecodeCString(enumName));
         Assert.Equal(NCType.NC_INT, baseType);
-        Assert.Equal(sizeof(int), baseSize.ToInt64());
-        Assert.Equal(3, memberCount);
+        Assert.Equal(sizeof(int), (int)baseSize);
+        Assert.Equal(3, (int)memberCount);
 
         var members = new Dictionary<string, int>(StringComparer.Ordinal);
-        for (int i = 0; i < memberCount; i++)
+        for (int i = 0; i < (int)memberCount; i++)
         {
             byte[] nameBuffer = new byte[256];
             InteropTestCommon.AssertSuccess(Native.nc_inq_enum_member(hnd.Id, enumTypeId, i, nameBuffer, out int value), "nc_inq_enum_member");

@@ -521,7 +521,7 @@ public sealed class DataFunctionContractTests
             () => new Box<string>(),
             (id, varid, a) => AssertSuccess(Native.nc_put_var_string(id, varid, (string[])a), "nc_put_var_string"),
             (id, varid, a) => ReadVarString(id, varid, (string[])a),
-            (id, varid, idx, v) => AssertSuccess(Native.nc_put_var1_string(id, varid, [(nuint)idx], (string)v), "nc_put_var1_string"),
+            (id, varid, idx, v) => AssertSuccess(Native.nc_put_var1_string(id, varid, [(nuint)idx], [(string)v]), "nc_put_var1_string"),
             (id, varid, idx, box) =>
             {
                 IntPtr[] ptrs = [IntPtr.Zero];

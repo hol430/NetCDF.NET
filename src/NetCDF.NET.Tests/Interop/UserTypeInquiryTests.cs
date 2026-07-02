@@ -42,11 +42,11 @@ public sealed class UserTypeInquiryTests
 
         byte[] userTypeName = new byte[256];
         InteropTestCommon.AssertSuccess(
-            Native.nc_inq_user_type(hnd.Id, typeId, userTypeName, out nuint userTypeSize, out NCType baseType, out int nfields, out int classp),
+            Native.nc_inq_user_type(hnd.Id, typeId, userTypeName, out nuint userTypeSize, out NCType baseType, out nuint nfields, out int classp),
             "nc_inq_user_type");
         Assert.Equal("compound_t", DecodeCString(userTypeName));
         Assert.Equal((nuint)4, userTypeSize);
-        Assert.Equal(1, nfields);
+        Assert.Equal(1, (int)nfields);
         Assert.Equal((int)NCType.NC_COMPOUND, classp);
     }
 

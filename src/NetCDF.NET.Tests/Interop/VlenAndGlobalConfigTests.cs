@@ -16,10 +16,10 @@ public sealed class VlenAndGlobalConfigTests
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(defStatus, "nc_def_vlen");
 
         byte[] name = new byte[256];
-        InteropTestCommon.AssertSuccess(Native.nc_inq_vlen(hnd.Id, vlenTypeId, name, out IntPtr datumSize, out NCType baseType), "nc_inq_vlen");
+        InteropTestCommon.AssertSuccess(Native.nc_inq_vlen(hnd.Id, vlenTypeId, name, out nuint datumSize, out NCType baseType), "nc_inq_vlen");
         Assert.Equal("int_list_t", DecodeCString(name));
         Assert.Equal(NCType.NC_INT, baseType);
-        Assert.Equal((IntPtr.Size * 2), datumSize.ToInt64());
+        Assert.Equal((IntPtr.Size * 2), (int)datumSize);
 
         int[] values = [10, 20, 30, 40];
         GCHandle handle = GCHandle.Alloc(values, GCHandleType.Pinned);
