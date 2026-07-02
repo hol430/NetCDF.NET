@@ -34,7 +34,7 @@ public sealed class VariableTests
     [Fact]
     public unsafe void DefVarChunking_AndInqVarChunking_RoundTrip()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)16, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
@@ -58,7 +58,7 @@ public sealed class VariableTests
     [Fact]
     public void SetAndGetVarChunkCache_RoundTrip()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)64, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
@@ -80,7 +80,7 @@ public sealed class VariableTests
     [Fact]
     public void DeflateAndFilterInquiry_RoundTrip()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)32, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
@@ -123,7 +123,7 @@ public sealed class VariableTests
     public unsafe void DefVarFill_AndInqVarFill_RoundTrip()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)8, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
@@ -140,7 +140,7 @@ public sealed class VariableTests
     public void DefVarFletcher32_AndInqVarFletcher32_RoundTrip()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)8, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
@@ -161,7 +161,7 @@ public sealed class VariableTests
     public void DefVarEndian_AndInqVarEndian_RoundTrip()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)8, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
@@ -178,7 +178,7 @@ public sealed class VariableTests
     public void SetVarSzip_AndInqVarSzip_RoundTrip()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)32, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");

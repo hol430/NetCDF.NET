@@ -72,7 +72,7 @@ public sealed class MetadataFunctionTests
     [Fact]
     public void NcPutAttString_RoundTripWithNcGetAttString_AndFree()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         string[] expected = ["alpha", "beta"];
         InteropTestCommon.AssertSuccess(

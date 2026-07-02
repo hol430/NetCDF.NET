@@ -9,7 +9,7 @@ public sealed class UserTypeInquiryTests
     [Fact]
     public void UserTypeInquiry_APIs_ReturnExpectedInformation()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         int defStatus = Native.nc_def_compound(hnd.Id, 4, "compound_t", out NCType typeId);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(defStatus, "nc_def_compound");

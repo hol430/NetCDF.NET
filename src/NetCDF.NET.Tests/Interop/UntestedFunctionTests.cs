@@ -12,7 +12,7 @@ public sealed class UntestedFunctionTests
     {
         using var temp = new TempFile();
 
-        InteropTestCommon.AssertSuccess(Native.nc_create(temp.FilePath, CreateMode.NC_NETCDF4, out int ncid), "nc_create");
+        InteropTestCommon.AssertSuccess(Native.nc_create(temp.FilePath, CreateMode.NC_CLOBBER, out int ncid), "nc_create");
         InteropTestCommon.AssertSuccess(Native.nc_abort(ncid), "nc_abort");
 
         int statusAfterAbort = Native.nc_inq_ndims(ncid, out _);
@@ -100,7 +100,7 @@ public sealed class UntestedFunctionTests
     [Fact]
     public void NcDefVarFilter_InvalidFilterId_ReturnsErrorOrFeatureUnavailable()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)3, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
@@ -121,7 +121,7 @@ public sealed class UntestedFunctionTests
     [Fact]
     public void NcGetVaraString_ReadsSlice_AndFreesReturnedStrings()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         string[] all = ["zero", "one", "two", "three"];
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)all.Length, out int dimId), "nc_def_dim");

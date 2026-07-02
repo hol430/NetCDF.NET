@@ -14,7 +14,7 @@ public sealed class DataFunctionContractTests
     {
         foreach (DataBinding binding in DataBindings.All)
         {
-            using NcTempFile hnd = new();
+            using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
             AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)binding.Length, out int dimId), $"nc_def_dim({binding.Name})");
             AssertSuccess(Native.nc_def_var(hnd.Id, binding.VarName, binding.Type, 1, [dimId], out int varId), $"nc_def_var({binding.Name})");
@@ -36,7 +36,7 @@ public sealed class DataFunctionContractTests
 
         foreach (DataBinding binding in DataBindings.Var1Stable)
         {
-            using NcTempFile hnd = new();
+            using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
             AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)length, out int dimId), $"nc_def_dim({binding.Name})");
             AssertSuccess(Native.nc_def_var(hnd.Id, binding.VarName, binding.Type, 1, [dimId], out int varId), $"nc_def_var({binding.Name})");
@@ -64,7 +64,7 @@ public sealed class DataFunctionContractTests
 
         foreach (DataBinding binding in DataBindings.All)
         {
-            using NcTempFile hnd = new();
+            using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
             AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)length, out int dimId), $"nc_def_dim({binding.Name})");
             AssertSuccess(Native.nc_def_var(hnd.Id, binding.VarName, binding.Type, 1, [dimId], out int varId), $"nc_def_var({binding.Name})");
@@ -97,7 +97,7 @@ public sealed class DataFunctionContractTests
 
         foreach (DataBinding binding in DataBindings.All.Where(b => b.SupportsVars))
         {
-            using NcTempFile hnd = new();
+            using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
             AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)length, out int dimId), $"nc_def_dim({binding.Name})");
             AssertSuccess(Native.nc_def_var(hnd.Id, binding.VarName, binding.Type, 1, [dimId], out int varId), $"nc_def_var({binding.Name})");

@@ -10,7 +10,7 @@ public sealed class VlenAndGlobalConfigTests
     [Fact]
     public void VlenType_DefineInquireAndElementRoundTrip()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         int defStatus = Native.nc_def_vlen(hnd.Id, "int_list_t", NCType.NC_INT, out NCType vlenTypeId);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(defStatus, "nc_def_vlen");
@@ -117,7 +117,7 @@ public sealed class VlenAndGlobalConfigTests
     [Fact]
     public void GetAttString_ReadsStringAttributeValues()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         string[] expected = ["north", "south", "east"];
         InteropTestCommon.AssertSuccess(

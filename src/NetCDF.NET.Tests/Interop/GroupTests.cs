@@ -8,7 +8,7 @@ public sealed class GroupTests
     [Fact]
     public void InqGrps_UsesTwoCallPattern_AndFindsDefinedChildren()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         int status = Native.nc_def_grp(hnd.Id, "g1", out int g1Id);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(status, "nc_def_grp(g1)");
@@ -27,7 +27,7 @@ public sealed class GroupTests
     [Fact]
     public void GroupParentAndLookup_InquiriesRoundTrip()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         int status = Native.nc_def_grp(hnd.Id, "parent", out int parentId);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(status, "nc_def_grp(parent)");
@@ -57,7 +57,7 @@ public sealed class GroupTests
     public void InqNcid_ResolvesChildAndRootGroups()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         int status = Native.nc_def_grp(hnd.Id, "parent", out int parentId);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(status, "nc_def_grp(parent)");
@@ -77,7 +77,7 @@ public sealed class GroupTests
     public void InqGrpnameLenAndFull_ReturnExpectedPath()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         int status = Native.nc_def_grp(hnd.Id, "parent", out int parentId);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(status, "nc_def_grp(parent)");
@@ -96,7 +96,7 @@ public sealed class GroupTests
     public void InqDimids_ReturnsOwnAndParentDimensions()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "root_dim", (nuint)4, out int rootDimId), "nc_def_dim(root)");
         int status = Native.nc_def_grp(hnd.Id, "child", out int childGroupId);
@@ -123,7 +123,7 @@ public sealed class GroupTests
     public void InqVarids_ReturnsGroupVariablesOnly()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "root_dim", (nuint)3, out int rootDimId), "nc_def_dim(root)");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "root_v", NCType.NC_INT, 1, [rootDimId], out _), "nc_def_var(root)");
@@ -147,7 +147,7 @@ public sealed class GroupTests
     public void RenameGroup_UpdatesNameAndPathLookups()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         int status = Native.nc_def_grp(hnd.Id, "old_name", out int grpId);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(status, "nc_def_grp(old_name)");

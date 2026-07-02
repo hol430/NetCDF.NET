@@ -8,7 +8,7 @@ public sealed class CompoundTypeTests
     [Fact]
     public void CompoundType_InquiryAPIs_ReturnExpectedContracts()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         int defStatus = Native.nc_def_compound(hnd.Id, 16, "sample_compound", out NCType typeId);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(defStatus, "nc_def_compound");

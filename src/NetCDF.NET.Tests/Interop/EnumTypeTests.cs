@@ -9,7 +9,7 @@ public sealed class EnumTypeTests
     [Fact]
     public void EnumType_InquiryAPIs_ReturnExpectedContracts()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         int defStatus = Native.nc_def_enum(hnd.Id, NCType.NC_INT, "color_t", out NCType enumTypeId);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(defStatus, "nc_def_enum");

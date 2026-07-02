@@ -29,7 +29,7 @@ public sealed class StringInteropTests
     [Fact]
     public void PutAndGetVarString_RoundTrip_AndFree()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
         string[] expected = ["alpha", "bravo", "charlie"];
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)expected.Length, out int dimId), "nc_def_dim");

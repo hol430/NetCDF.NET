@@ -30,15 +30,21 @@ public sealed class CreateOpenCloseTests
         Assert.NotEqual(InteropTestCommon.NcNoErr, status);
     }
 
-    [Fact]
-    public void NcCreateSyncClose_Reopen_Succeeds()
+    [Theory]
+    [MemberData(nameof(NetcdfTestFormats.AllFormats), MemberType = typeof(NetcdfTestFormats))]
+    public void NcCreateSyncClose_Reopen_Succeeds(NetcdfTestFormat format)
     {
         using var temp = new TempFile();
         int ncid = -1;
 
         try
         {
-            InteropTestCommon.AssertSuccess(Native.nc_create(temp.FilePath, CreateMode.NC_NETCDF4, out ncid), "nc_create");
+            InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(
+                Native.nc_create(temp.FilePath, format.CreateMode, out ncid),
+                "nc_create",
+                format.FeatureName,
+                InteropTestCommon.NcEinval);
+            InteropTestCommon.AssertSuccess(Native.nc_enddef(ncid), "nc_enddef");
             InteropTestCommon.AssertSuccess(Native.nc_sync(ncid), "nc_sync");
             InteropTestCommon.AssertSuccess(Native.nc_close(ncid), "nc_close(create)");
             ncid = -1;
@@ -73,13 +79,14 @@ public sealed class CreateOpenCloseTests
         Assert.Equal(-1, unlimdimid);
     }
 
-    [Fact]
-    public void NcInqFormat_APIs_ReturnSaneValues()
+    [Theory]
+    [MemberData(nameof(NetcdfTestFormats.AllFormats), MemberType = typeof(NetcdfTestFormats))]
+    public void NcInqFormat_APIs_ReturnSaneValues(NetcdfTestFormat format)
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(format);
 
-        InteropTestCommon.AssertSuccess(Native.nc_inq_format(hnd.Id, out int format), "nc_inq_format");
-        Assert.True(format > 0);
+        InteropTestCommon.AssertSuccess(Native.nc_inq_format(hnd.Id, out int actualFormat), "nc_inq_format");
+        Assert.True(actualFormat > 0);
 
         InteropTestCommon.AssertSuccess(Native.nc_inq_format_extended(hnd.Id, out int extFormat, out int mode), "nc_inq_format_extended");
         Assert.True(extFormat > 0);

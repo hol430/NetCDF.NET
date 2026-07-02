@@ -123,7 +123,7 @@ public sealed class AttributeTests
     [Fact]
     public void GlobalUcharAttribute_RoundTripAndInquire()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         byte[] expected = [0, 255];
         InteropTestCommon.AssertSuccess(Native.nc_put_att_uchar(hnd.Id, InteropTestCommon.NcGlobal, "uchar_values", NCType.NC_UBYTE, 2, expected), "nc_put_att_uchar");
         AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "uchar_values", NCType.NC_UBYTE, 2);
@@ -147,7 +147,7 @@ public sealed class AttributeTests
     [Fact]
     public void GlobalUbyteAttribute_RoundTripAndInquire()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         byte[] expected = [1, 200];
         InteropTestCommon.AssertSuccess(Native.nc_put_att_ubyte(hnd.Id, InteropTestCommon.NcGlobal, "ubyte_values", NCType.NC_UBYTE, 2, expected), "nc_put_att_ubyte");
         AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "ubyte_values", NCType.NC_UBYTE, 2);
@@ -159,7 +159,7 @@ public sealed class AttributeTests
     [Fact]
     public void GlobalUshortAttribute_RoundTripAndInquire()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         ushort[] expected = [12, 65000];
         InteropTestCommon.AssertSuccess(Native.nc_put_att_ushort(hnd.Id, InteropTestCommon.NcGlobal, "ushort_values", NCType.NC_USHORT, 2, expected), "nc_put_att_ushort");
         AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "ushort_values", NCType.NC_USHORT, 2);
@@ -171,7 +171,7 @@ public sealed class AttributeTests
     [Fact]
     public void GlobalUintAttribute_RoundTripAndInquire()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         uint[] expected = [1234u, 3_000_000_000u];
         InteropTestCommon.AssertSuccess(Native.nc_put_att_uint(hnd.Id, InteropTestCommon.NcGlobal, "uint_values", NCType.NC_UINT, 2, expected), "nc_put_att_uint");
         AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "uint_values", NCType.NC_UINT, 2);
@@ -183,7 +183,7 @@ public sealed class AttributeTests
     [Fact]
     public void GlobalLongAttribute_RoundTripAndInquire()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         long[] expected = [-1234567890L, 9876543210L];
         PutAttLong(hnd.Id, InteropTestCommon.NcGlobal, "long_values", NCType.NC_INT64, expected);
         AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "long_values", NCType.NC_INT64, 2);
@@ -195,7 +195,7 @@ public sealed class AttributeTests
     [Fact]
     public void GlobalLonglongAttribute_RoundTripAndInquire()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         long[] expected = [-9_000_000_000L, 9_000_000_000L];
         InteropTestCommon.AssertSuccess(Native.nc_put_att_longlong(hnd.Id, InteropTestCommon.NcGlobal, "longlong_values", NCType.NC_INT64, 2, expected), "nc_put_att_longlong");
         AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "longlong_values", NCType.NC_INT64, 2);
@@ -207,7 +207,7 @@ public sealed class AttributeTests
     [Fact]
     public void GlobalUlonglongAttribute_RoundTripAndInquire()
     {
-        using NcTempFile hnd = new();
+        using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         ulong[] expected = [0UL, 18_000_000_000UL];
         InteropTestCommon.AssertSuccess(Native.nc_put_att_ulonglong(hnd.Id, InteropTestCommon.NcGlobal, "ulonglong_values", NCType.NC_UINT64, 2, expected), "nc_put_att_ulonglong");
         AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "ulonglong_values", NCType.NC_UINT64, 2);

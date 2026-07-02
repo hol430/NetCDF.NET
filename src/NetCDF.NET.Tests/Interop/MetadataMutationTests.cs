@@ -9,7 +9,7 @@ public sealed class MetadataMutationTests
     public void RenameDim_UpdatesLookupByName()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)3, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_rename_dim(hnd.Id, dimId, "x_renamed"), "nc_rename_dim");
@@ -26,7 +26,7 @@ public sealed class MetadataMutationTests
     {
         using var temp = new TempFile();
 
-        using (NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4))
+        using (NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4))
         {
             InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)4, out int dimId), "nc_def_dim");
             InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
@@ -57,7 +57,7 @@ public sealed class MetadataMutationTests
     public void RenameAtt_UpdatesLookupByName_AndPreservesValue()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(
             Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "answer", NCType.NC_INT, 1, [42]),
@@ -85,7 +85,7 @@ public sealed class MetadataMutationTests
     public void DelAtt_RemovesAttributeAndDecrementsGlobalCount()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(
             Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "a1", NCType.NC_INT, 1, [1]),
@@ -112,7 +112,7 @@ public sealed class MetadataMutationTests
     public void CopyAtt_CopiesAttributeToAnotherVariable()
     {
         using var temp = new TempFile();
-        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4);
+        using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)1, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "src", NCType.NC_INT, 1, [dimId], out int srcVarId), "nc_def_var(src)");
@@ -141,7 +141,7 @@ public sealed class MetadataMutationTests
         using var dest = new TempFile();
 
         int sourceVarId;
-        using (NcFileHandle src = NcFileHandle.Create(source.FilePath, CreateMode.NC_NETCDF4))
+        using (NcFileHandle src = NcFileHandle.Create(source.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4))
         {
             InteropTestCommon.AssertSuccess(Native.nc_def_dim(src.Id, "x", (nuint)5, out int dimId), "nc_def_dim(src)");
             InteropTestCommon.AssertSuccess(Native.nc_def_var(src.Id, "values", NCType.NC_INT, 1, [dimId], out sourceVarId), "nc_def_var(src)");
@@ -150,7 +150,7 @@ public sealed class MetadataMutationTests
         }
 
         using (NcFileHandle src = NcFileHandle.Open(source.FilePath, OpenMode.NC_NOWRITE))
-        using (NcFileHandle dst = NcFileHandle.Create(dest.FilePath, CreateMode.NC_NETCDF4))
+        using (NcFileHandle dst = NcFileHandle.Create(dest.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4))
         {
             InteropTestCommon.AssertSuccess(Native.nc_def_dim(dst.Id, "x", (nuint)5, out _), "nc_def_dim(dst)");
             InteropTestCommon.AssertSuccess(Native.nc_copy_var(src.Id, sourceVarId, dst.Id), "nc_copy_var");

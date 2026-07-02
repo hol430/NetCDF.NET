@@ -8,6 +8,55 @@ namespace NetCDF.Tests.Interop;
 public sealed class DataRoundTripTests
 {
     [Theory]
+    [MemberData(nameof(NetcdfTestFormats.AllFormats), MemberType = typeof(NetcdfTestFormats))]
+    public void IntData_RoundTripAcrossCloseReopen_AllAvailableFileFormats(NetcdfTestFormat format)
+    {
+        int[] expected = [3, 1, 4, 1, 5];
+        using NcTempFile hnd = new(format);
+
+        AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)expected.Length, out int dimId), "nc_def_dim");
+        AssertSuccess(Native.nc_def_var(hnd.Id, "ints", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
+        AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+        AssertSuccess(Native.nc_put_var_int(hnd.Id, varId, expected), "nc_put_var_int");
+
+        hnd.CloseHandle();
+
+        using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
+        AssertSuccess(Native.nc_inq_varid(read.Id, "ints", out int readVarId), "nc_inq_varid");
+
+        int[] actual = new int[expected.Length];
+        AssertSuccess(Native.nc_get_var_int(read.Id, readVarId, actual), "nc_get_var_int");
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(NetcdfTestFormats.AllFormats), MemberType = typeof(NetcdfTestFormats))]
+    public void PutVaraInt_WritesSubset_AllAvailableFileFormats(NetcdfTestFormat format)
+    {
+        using NcTempFile hnd = new(format);
+        int[] all = [0, 0, 0, 0, 0, 0];
+
+        AssertSuccess(Native.nc_def_dim(hnd.Id, "x", (nuint)all.Length, out int dimId), "nc_def_dim");
+        AssertSuccess(Native.nc_def_var(hnd.Id, "ints", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
+        AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
+
+        AssertSuccess(Native.nc_put_var_int(hnd.Id, varId, all), "nc_put_var_int(init)");
+
+        nuint[] start = [(nuint)2];
+        nuint[] count = [(nuint)3];
+        int[] subset = [9, 8, 7];
+        AssertSuccess(Native.nc_put_vara_int(hnd.Id, varId, start, count, subset), "nc_put_vara_int");
+
+        hnd.CloseHandle();
+
+        using NcFileHandle read = NcFileHandle.Open(hnd.Path, OpenMode.NC_NOWRITE);
+        AssertSuccess(Native.nc_inq_varid(read.Id, "ints", out varId), "nc_inq_varid");
+        int[] actual = new int[6];
+        AssertSuccess(Native.nc_get_var_int(read.Id, varId, actual), "nc_get_var_int");
+        Assert.Equal(new[] { 0, 0, 9, 8, 7, 0 }, actual);
+    }
+
+    [Theory]
     [InlineData(3, 1, 4, 1, 5)]
     public void IntData_RoundTripAcrossCloseReopen(params int[] expected)
     {

@@ -7,8 +7,10 @@ namespace NetCDF.Tests.Interop;
 internal static class InteropTestCommon
 {
     internal const string FeatureFilters = "filters";
+    internal const string FeatureCdf5 = "cdf5";
     internal const string FeatureMpi = "mpi";
     internal const string FeatureMpiClassic = "pnetcdf";
+    internal const string FeatureNetcdf4 = "netcdf4";
     internal const string FeatureParallel4 = "parallel4";
 
     internal const int NcNoErr = 0;
@@ -21,6 +23,7 @@ internal static class InteropTestCommon
     internal const int NcEnotBuilt = -128;
     internal const int NcEfilter = -132;
     internal const int NcEnoFilter = -136;
+    internal const int NcEinval = -36;
 
     internal static void AssertSuccess(int status, string operation)
     {

@@ -11,10 +11,15 @@ public sealed class NcTempFile : IDisposable
     public int Id => handle.Id;
     public string Path => tempFile.FilePath;
 
-    public NcTempFile(CreateMode mode = CreateMode.NC_NETCDF4)
+    public NcTempFile(CreateMode mode = CreateMode.NC_CLOBBER, string? featureName = null)
     {
         tempFile = new TempFile();
-        handle = NcFileHandle.Create(tempFile.FilePath, mode);
+        handle = NcFileHandle.Create(tempFile.FilePath, mode, featureName);
+    }
+
+    public NcTempFile(NetcdfTestFormat format)
+        : this(format.CreateMode, format.FeatureName)
+    {
     }
 
     public void CloseHandle()

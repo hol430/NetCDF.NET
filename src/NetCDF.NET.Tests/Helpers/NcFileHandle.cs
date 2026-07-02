@@ -9,12 +9,19 @@ public sealed class NcFileHandle : IDisposable
 
     public NcFileHandle(int id) => Id = id;
 
-    public static NcFileHandle Create(string path, CreateMode mode)
+    public static NcFileHandle Create(string path, CreateMode mode, string? featureName = null)
     {
         int res = Native.nc_create(path, mode, out int id);
-        InteropTestCommon.AssertSuccess(res, nameof(Native.nc_create));
+        InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(
+            res,
+            nameof(Native.nc_create),
+            featureName,
+            InteropTestCommon.NcEinval);
         return new NcFileHandle(id);
     }
+
+    public static NcFileHandle Create(string path, NetcdfTestFormat format)
+        => Create(path, format.CreateMode, format.FeatureName);
 
     public static NcFileHandle Open(string path, OpenMode mode)
     {
