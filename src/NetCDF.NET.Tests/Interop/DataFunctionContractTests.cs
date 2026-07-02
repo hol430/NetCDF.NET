@@ -34,7 +34,7 @@ public sealed class DataFunctionContractTests
         const int length = 6;
         const int index = 3;
 
-        foreach (DataBinding binding in DataBindings.Var1Stable)
+        foreach (DataBinding binding in DataBindings.All)
         {
             using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
 
@@ -259,23 +259,6 @@ public sealed class DataFunctionContractTests
             ForULong(),
             ForText(),
             ForString(),
-        ];
-
-        public static readonly IReadOnlyList<DataBinding> Var1Stable =
-        [
-            ForInt(),
-            ForShort(),
-            ForFloat(),
-            ForDouble(),
-            ForLong(),
-            ForSByte(),
-            ForByteAsUChar(),
-            ForByteAsUByte(),
-            ForUShort(),
-            ForUInt(),
-            ForLongLong(),
-            ForULong(),
-            ForText(),
         ];
 
         private static nuint[] Ix(int value) => [(nuint)value];
