@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+import argparse
+import sys
+from pathlib import Path
+from xml.etree import ElementTree
+
+DEFAULT_PATTERN = "src/NetCDF.NET.Tests/TestResults/*/coverage.cobertura.xml"
+NATIVE_CLASS = "NetCDF.Interop.Native"
+
+def find_report(explicit_path):
+    if explicit_path is not None:
+        path = Path(explicit_path)
+        if not path.is_file():
+            raise FileNotFoundError(f"Coverage report not found: {path}")
+        return path
+
+    reports = [path for path in Path.cwd().glob(DEFAULT_PATTERN) if path.is_file()]
+    if not reports:
+        raise FileNotFoundError(
+            f"No Cobertura coverage report found matching {DEFAULT_PATTERN}. "
+            "Run `make check` first."
+        )
+
+    return max(reports, key=lambda path: path.stat().st_mtime)
+
+def read_native_methods(report_path):
+    root = ElementTree.parse(report_path).getroot()
+    methods = []
+
+    for class_element in root.findall(".//class"):
+        if class_element.attrib.get("name") != NATIVE_CLASS:
+            continue
+
+        for method_element in class_element.findall("./methods/method"):
+            method_name = method_element.attrib["name"]
+            lines = method_element.findall("./lines/line")
+            hits = sum(int(line.attrib.get("hits", "0")) for line in lines)
+            methods.append((method_name, hits))
+
+    if not methods:
+        raise ValueError(f"No {NATIVE_CLASS} methods found in {report_path}")
+
+    return sorted(methods)
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Summarize generated LibraryImport binding method coverage."
+    )
+    parser.add_argument(
+        "report",
+        nargs="?",
+        help="Path to coverage.cobertura.xml. Defaults to the newest test result.",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit non-zero when any native binding method has zero hits.",
+    )
+    args = parser.parse_args()
+
+    try:
+        report_path = find_report(args.report)
+        methods = read_native_methods(report_path)
+    except (ElementTree.ParseError, FileNotFoundError, ValueError) as error:
+        print(f"binding-coverage-report: {error}", file=sys.stderr)
+        return 2
+
+    tested = [(name, hits) for name, hits in methods if hits > 0]
+    untested = [name for name, hits in methods if hits == 0]
+
+    print(f"Native binding coverage: {len(tested)}/{len(methods)} methods hit")
+    print(f"Coverage report: {report_path}")
+
+    if untested:
+        print()
+        print("Untested:")
+        for method_name in untested:
+            print(f"  {method_name}")
+
+    if args.strict and untested:
+        return 1
+
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())

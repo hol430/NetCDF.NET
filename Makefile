@@ -1,6 +1,6 @@
 SLN=src/NetCDF.NET.slnx
 
-.PHONY: clean build check mpi-test test coverage
+.PHONY: clean build check binding-coverage mpi-test test coverage
 
 build:
 	dotnet build $(SLN)
@@ -11,6 +11,10 @@ clean:
 
 check:
 	dotnet test --collect:"XPlat Code Coverage" $(SLN)
+	./scripts/binding-coverage-report
+
+binding-coverage:
+	./scripts/binding-coverage-report
 
 mpi-test:
 	@if command -v mpiexec >/dev/null 2>&1; then \
