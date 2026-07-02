@@ -1,4 +1,5 @@
 using NetCDF.Interop;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -48,7 +49,7 @@ public sealed class MpiInteropTests
             createStatus,
             $"nc_create_par({mode.Name})",
             mode.FeatureName,
-            InteropTestCommon.NcEnopar);
+            NcEnopar);
 
         try
         {
@@ -60,7 +61,7 @@ public sealed class MpiInteropTests
                 parAccessStatus,
                 $"nc_var_par_access({mode.Name} probe)",
                 mode.FeatureName,
-                InteropTestCommon.NcEnopar);
+                NcEnopar);
         }
         finally
         {

@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -14,12 +15,12 @@ public sealed class StringInteropTests
 
         const string expected = "netcdf-title";
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_att_text(hnd.Id, InteropTestCommon.NcGlobal, "title", (nuint)expected.Length, expected),
+            Native.nc_put_att_text(hnd.Id, NcGlobal, "title", (nuint)expected.Length, expected),
             "nc_put_att_text");
 
         byte[] data = new byte[expected.Length];
         InteropTestCommon.AssertSuccess(
-            Native.nc_get_att_text(hnd.Id, InteropTestCommon.NcGlobal, "title", data),
+            Native.nc_get_att_text(hnd.Id, NcGlobal, "title", data),
             "nc_get_att_text");
 
         string actual = Encoding.ASCII.GetString(data);

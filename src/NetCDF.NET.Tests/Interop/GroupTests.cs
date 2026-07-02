@@ -1,5 +1,6 @@
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -160,7 +161,7 @@ public sealed class GroupTests
         Assert.Equal(grpId, lookedUpByFullPath);
 
         int oldNameStatus = Native.nc_inq_grp_ncid(hnd.Id, "old_name", out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, oldNameStatus);
+        Assert.NotEqual(NcNoErr, oldNameStatus);
 
         byte[] groupName = new byte[256];
         InteropTestCommon.AssertSuccess(Native.nc_inq_grpname(grpId, groupName), "nc_inq_grpname(new_name)");

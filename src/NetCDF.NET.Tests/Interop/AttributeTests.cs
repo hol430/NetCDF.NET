@@ -1,5 +1,6 @@
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -35,13 +36,13 @@ public sealed class AttributeTests
 
         int[] expected = [42];
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "answer", NCType.NC_INT, 1, expected),
+            Native.nc_put_att_int(hnd.Id, NcGlobal, "answer", NCType.NC_INT, 1, expected),
             "nc_put_att_int(global)");
 
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "answer", NCType.NC_INT, 1);
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "answer", NCType.NC_INT, 1);
 
         int[] actual = new int[1];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_int(hnd.Id, InteropTestCommon.NcGlobal, "answer", actual), "nc_get_att_int(global)");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_int(hnd.Id, NcGlobal, "answer", actual), "nc_get_att_int(global)");
         Assert.Equal(expected, actual);
     }
 
@@ -68,12 +69,12 @@ public sealed class AttributeTests
 
         double[] expected = [1.5d, -2.25d];
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_att_double(hnd.Id, InteropTestCommon.NcGlobal, "dvals", NCType.NC_DOUBLE, 2, expected),
+            Native.nc_put_att_double(hnd.Id, NcGlobal, "dvals", NCType.NC_DOUBLE, 2, expected),
             "nc_put_att_double(global)");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "dvals", NCType.NC_DOUBLE, 2);
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "dvals", NCType.NC_DOUBLE, 2);
 
         double[] actual = new double[2];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_double(hnd.Id, InteropTestCommon.NcGlobal, "dvals", actual), "nc_get_att_double(global)");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_double(hnd.Id, NcGlobal, "dvals", actual), "nc_get_att_double(global)");
         Assert.Equal(expected, actual);
     }
 
@@ -102,10 +103,10 @@ public sealed class AttributeTests
 
         const string text = "netcdf";
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_att_text(hnd.Id, InteropTestCommon.NcGlobal, "title", (nuint)text.Length, text),
+            Native.nc_put_att_text(hnd.Id, NcGlobal, "title", (nuint)text.Length, text),
             "nc_put_att_text(global)");
 
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "title", NCType.NC_CHAR, (nuint)text.Length);
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "title", NCType.NC_CHAR, (nuint)text.Length);
     }
 
     [Fact]
@@ -113,10 +114,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new();
         sbyte[] expected = [-4, 9];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_schar(hnd.Id, InteropTestCommon.NcGlobal, "schar_values", NCType.NC_BYTE, 2, expected), "nc_put_att_schar");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "schar_values", NCType.NC_BYTE, 2);
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_schar(hnd.Id, NcGlobal, "schar_values", NCType.NC_BYTE, 2, expected), "nc_put_att_schar");
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "schar_values", NCType.NC_BYTE, 2);
         sbyte[] actual = new sbyte[expected.Length];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_schar(hnd.Id, InteropTestCommon.NcGlobal, "schar_values", actual), "nc_get_att_schar");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_schar(hnd.Id, NcGlobal, "schar_values", actual), "nc_get_att_schar");
         Assert.Equal(expected, actual);
     }
 
@@ -125,10 +126,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         byte[] expected = [0, 255];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_uchar(hnd.Id, InteropTestCommon.NcGlobal, "uchar_values", NCType.NC_UBYTE, 2, expected), "nc_put_att_uchar");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "uchar_values", NCType.NC_UBYTE, 2);
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_uchar(hnd.Id, NcGlobal, "uchar_values", NCType.NC_UBYTE, 2, expected), "nc_put_att_uchar");
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "uchar_values", NCType.NC_UBYTE, 2);
         byte[] actual = new byte[expected.Length];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_uchar(hnd.Id, InteropTestCommon.NcGlobal, "uchar_values", actual), "nc_get_att_uchar");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_uchar(hnd.Id, NcGlobal, "uchar_values", actual), "nc_get_att_uchar");
         Assert.Equal(expected, actual);
     }
 
@@ -137,10 +138,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new();
         short[] expected = [-123, 456];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_short(hnd.Id, InteropTestCommon.NcGlobal, "short_values", NCType.NC_SHORT, 2, expected), "nc_put_att_short");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "short_values", NCType.NC_SHORT, 2);
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_short(hnd.Id, NcGlobal, "short_values", NCType.NC_SHORT, 2, expected), "nc_put_att_short");
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "short_values", NCType.NC_SHORT, 2);
         short[] actual = new short[expected.Length];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_short(hnd.Id, InteropTestCommon.NcGlobal, "short_values", actual), "nc_get_att_short");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_short(hnd.Id, NcGlobal, "short_values", actual), "nc_get_att_short");
         Assert.Equal(expected, actual);
     }
 
@@ -149,10 +150,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         byte[] expected = [1, 200];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_ubyte(hnd.Id, InteropTestCommon.NcGlobal, "ubyte_values", NCType.NC_UBYTE, 2, expected), "nc_put_att_ubyte");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "ubyte_values", NCType.NC_UBYTE, 2);
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_ubyte(hnd.Id, NcGlobal, "ubyte_values", NCType.NC_UBYTE, 2, expected), "nc_put_att_ubyte");
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "ubyte_values", NCType.NC_UBYTE, 2);
         byte[] actual = new byte[expected.Length];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_ubyte(hnd.Id, InteropTestCommon.NcGlobal, "ubyte_values", actual), "nc_get_att_ubyte");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_ubyte(hnd.Id, NcGlobal, "ubyte_values", actual), "nc_get_att_ubyte");
         Assert.Equal(expected, actual);
     }
 
@@ -161,10 +162,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         ushort[] expected = [12, 65000];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_ushort(hnd.Id, InteropTestCommon.NcGlobal, "ushort_values", NCType.NC_USHORT, 2, expected), "nc_put_att_ushort");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "ushort_values", NCType.NC_USHORT, 2);
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_ushort(hnd.Id, NcGlobal, "ushort_values", NCType.NC_USHORT, 2, expected), "nc_put_att_ushort");
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "ushort_values", NCType.NC_USHORT, 2);
         ushort[] actual = new ushort[expected.Length];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_ushort(hnd.Id, InteropTestCommon.NcGlobal, "ushort_values", actual), "nc_get_att_ushort");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_ushort(hnd.Id, NcGlobal, "ushort_values", actual), "nc_get_att_ushort");
         Assert.Equal(expected, actual);
     }
 
@@ -173,10 +174,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         uint[] expected = [1234u, 3_000_000_000u];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_uint(hnd.Id, InteropTestCommon.NcGlobal, "uint_values", NCType.NC_UINT, 2, expected), "nc_put_att_uint");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "uint_values", NCType.NC_UINT, 2);
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_uint(hnd.Id, NcGlobal, "uint_values", NCType.NC_UINT, 2, expected), "nc_put_att_uint");
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "uint_values", NCType.NC_UINT, 2);
         uint[] actual = new uint[expected.Length];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_uint(hnd.Id, InteropTestCommon.NcGlobal, "uint_values", actual), "nc_get_att_uint");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_uint(hnd.Id, NcGlobal, "uint_values", actual), "nc_get_att_uint");
         Assert.Equal(expected, actual);
     }
 
@@ -185,10 +186,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         long[] expected = [-1234567890L, 9876543210L];
-        PutAttLong(hnd.Id, InteropTestCommon.NcGlobal, "long_values", NCType.NC_INT64, expected);
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "long_values", NCType.NC_INT64, 2);
+        PutAttLong(hnd.Id, NcGlobal, "long_values", NCType.NC_INT64, expected);
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "long_values", NCType.NC_INT64, 2);
         long[] actual = new long[expected.Length];
-        GetAttLong(hnd.Id, InteropTestCommon.NcGlobal, "long_values", actual);
+        GetAttLong(hnd.Id, NcGlobal, "long_values", actual);
         Assert.Equal(expected, actual);
     }
 
@@ -197,10 +198,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         long[] expected = [-9_000_000_000L, 9_000_000_000L];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_longlong(hnd.Id, InteropTestCommon.NcGlobal, "longlong_values", NCType.NC_INT64, 2, expected), "nc_put_att_longlong");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "longlong_values", NCType.NC_INT64, 2);
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_longlong(hnd.Id, NcGlobal, "longlong_values", NCType.NC_INT64, 2, expected), "nc_put_att_longlong");
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "longlong_values", NCType.NC_INT64, 2);
         long[] actual = new long[expected.Length];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_longlong(hnd.Id, InteropTestCommon.NcGlobal, "longlong_values", actual), "nc_get_att_longlong");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_longlong(hnd.Id, NcGlobal, "longlong_values", actual), "nc_get_att_longlong");
         Assert.Equal(expected, actual);
     }
 
@@ -209,10 +210,10 @@ public sealed class AttributeTests
     {
         using NcTempFile hnd = new(NetcdfTestFormats.Netcdf4);
         ulong[] expected = [0UL, 18_000_000_000UL];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_ulonglong(hnd.Id, InteropTestCommon.NcGlobal, "ulonglong_values", NCType.NC_UINT64, 2, expected), "nc_put_att_ulonglong");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "ulonglong_values", NCType.NC_UINT64, 2);
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_ulonglong(hnd.Id, NcGlobal, "ulonglong_values", NCType.NC_UINT64, 2, expected), "nc_put_att_ulonglong");
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "ulonglong_values", NCType.NC_UINT64, 2);
         ulong[] actual = new ulong[expected.Length];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_ulonglong(hnd.Id, InteropTestCommon.NcGlobal, "ulonglong_values", actual), "nc_get_att_ulonglong");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_ulonglong(hnd.Id, NcGlobal, "ulonglong_values", actual), "nc_get_att_ulonglong");
         Assert.Equal(expected, actual);
     }
 
@@ -223,9 +224,9 @@ public sealed class AttributeTests
         int varId = DefineIntVariable(hnd.Id);
 
         int[] gSource = [41];
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "source_global", NCType.NC_INT, 1, gSource), "nc_put_att_int(source_global)");
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, NcGlobal, "source_global", NCType.NC_INT, 1, gSource), "nc_put_att_int(source_global)");
 
-        InteropTestCommon.AssertSuccess(Native.nc_copy_att(hnd.Id, InteropTestCommon.NcGlobal, "source_global", hnd.Id, varId), "nc_copy_att(global->var)");
+        InteropTestCommon.AssertSuccess(Native.nc_copy_att(hnd.Id, NcGlobal, "source_global", hnd.Id, varId), "nc_copy_att(global->var)");
         AssertAttributeMetadata(hnd.Id, varId, "source_global", NCType.NC_INT, 1);
         int[] copiedToVar = new int[1];
         InteropTestCommon.AssertSuccess(Native.nc_get_att_int(hnd.Id, varId, "source_global", copiedToVar), "nc_get_att_int(copied_var)");
@@ -235,18 +236,18 @@ public sealed class AttributeTests
         int renamedLookupStatus = Native.nc_inq_attid(hnd.Id, varId, "renamed_var", out _);
         InteropTestCommon.AssertSuccess(renamedLookupStatus, "nc_inq_attid(renamed_var)");
         int oldNameLookupStatus = Native.nc_inq_attid(hnd.Id, varId, "source_global", out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, oldNameLookupStatus);
+        Assert.NotEqual(NcNoErr, oldNameLookupStatus);
 
         InteropTestCommon.AssertSuccess(Native.nc_del_att(hnd.Id, varId, "renamed_var"), "nc_del_att(var)");
         int deletedLookupStatus = Native.nc_inq_attid(hnd.Id, varId, "renamed_var", out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, deletedLookupStatus);
+        Assert.NotEqual(NcNoErr, deletedLookupStatus);
 
         int[] varSource = [7, 8];
         InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, varId, "var_source", NCType.NC_INT, 2, varSource), "nc_put_att_int(var_source)");
-        InteropTestCommon.AssertSuccess(Native.nc_copy_att(hnd.Id, varId, "var_source", hnd.Id, InteropTestCommon.NcGlobal), "nc_copy_att(var->global)");
-        AssertAttributeMetadata(hnd.Id, InteropTestCommon.NcGlobal, "var_source", NCType.NC_INT, 2);
+        InteropTestCommon.AssertSuccess(Native.nc_copy_att(hnd.Id, varId, "var_source", hnd.Id, NcGlobal), "nc_copy_att(var->global)");
+        AssertAttributeMetadata(hnd.Id, NcGlobal, "var_source", NCType.NC_INT, 2);
         int[] copiedToGlobal = new int[2];
-        InteropTestCommon.AssertSuccess(Native.nc_get_att_int(hnd.Id, InteropTestCommon.NcGlobal, "var_source", copiedToGlobal), "nc_get_att_int(copied_global)");
+        InteropTestCommon.AssertSuccess(Native.nc_get_att_int(hnd.Id, NcGlobal, "var_source", copiedToGlobal), "nc_get_att_int(copied_global)");
         Assert.Equal(varSource, copiedToGlobal);
     }
 
@@ -257,8 +258,8 @@ public sealed class AttributeTests
 
         int varId = DefineIntVariable(hnd.Id);
 
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "g1", NCType.NC_INT, 1, [1]), "nc_put_att_int(global)");
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_float(hnd.Id, InteropTestCommon.NcGlobal, "g2", NCType.NC_FLOAT, 2, [1.0f, 2.0f]), "nc_put_att_float(global)");
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, NcGlobal, "g1", NCType.NC_INT, 1, [1]), "nc_put_att_int(global)");
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_float(hnd.Id, NcGlobal, "g2", NCType.NC_FLOAT, 2, [1.0f, 2.0f]), "nc_put_att_float(global)");
         InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, varId, "a1", NCType.NC_INT, 1, [1]), "nc_put_att_int(var)");
         InteropTestCommon.AssertSuccess(Native.nc_put_att_double(hnd.Id, varId, "a2", NCType.NC_DOUBLE, 1, [2.0d]), "nc_put_att_double(var)");
 
@@ -275,13 +276,13 @@ public sealed class AttributeTests
         using NcTempFile hnd = new();
         int varId = DefineIntVariable(hnd.Id);
 
-        Assert.NotEqual(InteropTestCommon.NcNoErr, Native.nc_inq_att(hnd.Id, varId, "missing", out _, out _));
-        Assert.NotEqual(InteropTestCommon.NcNoErr, Native.nc_inq_attid(hnd.Id, varId, "missing", out _));
-        Assert.NotEqual(InteropTestCommon.NcNoErr, Native.nc_inq_attlen(hnd.Id, varId, "missing", out _));
-        Assert.NotEqual(InteropTestCommon.NcNoErr, Native.nc_inq_atttype(hnd.Id, varId, "missing", out _));
+        Assert.NotEqual(NcNoErr, Native.nc_inq_att(hnd.Id, varId, "missing", out _, out _));
+        Assert.NotEqual(NcNoErr, Native.nc_inq_attid(hnd.Id, varId, "missing", out _));
+        Assert.NotEqual(NcNoErr, Native.nc_inq_attlen(hnd.Id, varId, "missing", out _));
+        Assert.NotEqual(NcNoErr, Native.nc_inq_atttype(hnd.Id, varId, "missing", out _));
 
         int[] values = new int[1];
-        Assert.NotEqual(InteropTestCommon.NcNoErr, Native.nc_get_att_int(hnd.Id, varId, "missing", values));
+        Assert.NotEqual(NcNoErr, Native.nc_get_att_int(hnd.Id, varId, "missing", values));
     }
 
     private static void PutAttLong(int ncid, int varid, string name, NCType type, long[] values)

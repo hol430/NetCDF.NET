@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using NetCDF.Interop;
 using Xunit.Sdk;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -12,18 +13,6 @@ internal static class InteropTestCommon
     internal const string FeatureMpiClassic = "pnetcdf";
     internal const string FeatureNetcdf4 = "netcdf4";
     internal const string FeatureParallel4 = "parallel4";
-
-    internal const int NcNoErr = 0;
-    internal const int NcGlobal = -1;
-    internal const int NcChunked = 0;
-    internal const int NcContiguous = 1;
-
-    internal const int NcEnotNc4 = -111;
-    internal const int NcEnopar = -114;
-    internal const int NcEnotBuilt = -128;
-    internal const int NcEfilter = -132;
-    internal const int NcEnoFilter = -136;
-    internal const int NcEinval = -36;
 
     internal static void AssertSuccess(int status, string operation)
     {

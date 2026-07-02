@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -121,13 +122,13 @@ public sealed class VlenAndGlobalConfigTests
 
         string[] expected = ["north", "south", "east"];
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_att_string(hnd.Id, InteropTestCommon.NcGlobal, "labels", (nuint)expected.Length, expected),
+            Native.nc_put_att_string(hnd.Id, NcGlobal, "labels", (nuint)expected.Length, expected),
             "nc_put_att_string");
 
         IntPtr[] ptrs = new IntPtr[expected.Length];
         try
         {
-            InteropTestCommon.AssertSuccess(Native.nc_get_att_string(hnd.Id, InteropTestCommon.NcGlobal, "labels", ptrs), "nc_get_att_string");
+            InteropTestCommon.AssertSuccess(Native.nc_get_att_string(hnd.Id, NcGlobal, "labels", ptrs), "nc_get_att_string");
             string[] actual = ptrs.Select(p => Marshal.PtrToStringAnsi(p) ?? string.Empty).ToArray();
             Assert.Equal(expected, actual);
         }

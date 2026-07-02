@@ -1,5 +1,6 @@
 using NetCDF.Interop;
 using NetCDF.Tests.Interop;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Helpers;
 
@@ -16,7 +17,7 @@ public sealed class NcFileHandle : IDisposable
             res,
             nameof(Native.nc_create),
             featureName,
-            InteropTestCommon.NcEinval);
+            NcEinval);
         return new NcFileHandle(id);
     }
 

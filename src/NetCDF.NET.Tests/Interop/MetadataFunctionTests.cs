@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -38,15 +39,15 @@ public sealed class MetadataFunctionTests
     {
         using NcTempFile hnd = new();
 
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "answer", NCType.NC_INT, 1, [42]), "nc_put_att_int(answer)");
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_text(hnd.Id, InteropTestCommon.NcGlobal, "title", (nuint)5, "ocean"), "nc_put_att_text(title)");
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, NcGlobal, "answer", NCType.NC_INT, 1, [42]), "nc_put_att_int(answer)");
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_text(hnd.Id, NcGlobal, "title", (nuint)5, "ocean"), "nc_put_att_text(title)");
         InteropTestCommon.AssertSuccess(Native.nc_inq_natts(hnd.Id, out int ngatts), "nc_inq_natts");
         Assert.Equal(2, ngatts);
 
         byte[] first = new byte[256];
         byte[] second = new byte[256];
-        InteropTestCommon.AssertSuccess(Native.nc_inq_attname(hnd.Id, InteropTestCommon.NcGlobal, 0, first), "nc_inq_attname(0)");
-        InteropTestCommon.AssertSuccess(Native.nc_inq_attname(hnd.Id, InteropTestCommon.NcGlobal, 1, second), "nc_inq_attname(1)");
+        InteropTestCommon.AssertSuccess(Native.nc_inq_attname(hnd.Id, NcGlobal, 0, first), "nc_inq_attname(0)");
+        InteropTestCommon.AssertSuccess(Native.nc_inq_attname(hnd.Id, NcGlobal, 1, second), "nc_inq_attname(1)");
 
         string[] names = [DecodeCString(first), DecodeCString(second)];
         Assert.Contains("answer", names);
@@ -76,17 +77,17 @@ public sealed class MetadataFunctionTests
 
         string[] expected = ["alpha", "beta"];
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_att_string(hnd.Id, InteropTestCommon.NcGlobal, "labels", (nuint)expected.Length, expected),
+            Native.nc_put_att_string(hnd.Id, NcGlobal, "labels", (nuint)expected.Length, expected),
             "nc_put_att_string");
 
-        InteropTestCommon.AssertSuccess(Native.nc_inq_att(hnd.Id, InteropTestCommon.NcGlobal, "labels", out NCType type, out nuint len), "nc_inq_att");
+        InteropTestCommon.AssertSuccess(Native.nc_inq_att(hnd.Id, NcGlobal, "labels", out NCType type, out nuint len), "nc_inq_att");
         Assert.Equal(NCType.NC_STRING, type);
         Assert.Equal((nuint)2, len);
 
         IntPtr[] ptrs = new IntPtr[expected.Length];
         try
         {
-            InteropTestCommon.AssertSuccess(Native.nc_get_att_string(hnd.Id, InteropTestCommon.NcGlobal, "labels", ptrs), "nc_get_att_string");
+            InteropTestCommon.AssertSuccess(Native.nc_get_att_string(hnd.Id, NcGlobal, "labels", ptrs), "nc_get_att_string");
             string[] actual = ptrs.Select(p => Marshal.PtrToStringAnsi(p) ?? string.Empty).ToArray();
             Assert.Equal(expected, actual);
         }

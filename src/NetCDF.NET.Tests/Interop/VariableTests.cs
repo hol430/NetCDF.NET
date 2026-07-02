@@ -1,5 +1,6 @@
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -40,7 +41,7 @@ public sealed class VariableTests
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
 
         nuint[] expectedChunks = [(nuint)4];
-        int chunkStatus = Native.nc_def_var_chunking(hnd.Id, varId, InteropTestCommon.NcChunked, expectedChunks);
+        int chunkStatus = Native.nc_def_var_chunking(hnd.Id, varId, NcChunked, expectedChunks);
         InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(chunkStatus, "nc_def_var_chunking");
 
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
@@ -49,7 +50,7 @@ public sealed class VariableTests
         fixed (nuint* chunkPtr = actualChunks)
         {
             InteropTestCommon.AssertSuccess(Native.nc_inq_var_chunking(hnd.Id, varId, out int storage, chunkPtr), "nc_inq_var_chunking");
-            Assert.Equal(InteropTestCommon.NcChunked, storage);
+            Assert.Equal(NcChunked, storage);
         }
 
         Assert.Equal(expectedChunks[0], actualChunks[0]);
@@ -90,7 +91,7 @@ public sealed class VariableTests
             deflateStatus,
             "nc_def_var_deflate",
             InteropTestCommon.FeatureFilters,
-            InteropTestCommon.NcEfilter);
+            NcEfilter);
 
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
@@ -104,8 +105,8 @@ public sealed class VariableTests
             genericFilterStatus,
             "nc_inq_var_filter(count)",
             InteropTestCommon.FeatureFilters,
-            InteropTestCommon.NcEnoFilter,
-            InteropTestCommon.NcEfilter);
+            NcEnoFilter,
+            NcEfilter);
 
         Assert.True(filterId > 0);
 
@@ -150,7 +151,7 @@ public sealed class VariableTests
             setStatus,
             "nc_def_var_fletcher32",
             InteropTestCommon.FeatureFilters,
-            InteropTestCommon.NcEfilter);
+            NcEfilter);
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
         InteropTestCommon.AssertSuccess(Native.nc_inq_var_fletcher32(hnd.Id, varId, out int fletcher32), "nc_inq_var_fletcher32");
@@ -190,7 +191,7 @@ public sealed class VariableTests
             setStatus,
             "nc_set_var_szip",
             InteropTestCommon.FeatureFilters,
-            InteropTestCommon.NcEfilter);
+            NcEfilter);
         InteropTestCommon.AssertSuccess(Native.nc_enddef(hnd.Id), "nc_enddef");
 
         int inqStatus = Native.nc_inq_var_szip(hnd.Id, varId, out int actualOptionsMask, out int actualPixelsPerBlock);
@@ -208,15 +209,15 @@ public sealed class VariableTests
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "v", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
 
         int status = Native.nc_def_var_filter(hnd.Id, varId, uint.MaxValue, 1, [42u]);
-        if (status == InteropTestCommon.NcEnotBuilt || status == InteropTestCommon.NcEnotNc4 || status == InteropTestCommon.NcEfilter)
+        if (status == NcEnotBuilt || status == NcEnotNc4 || status == NcEfilter)
         {
             InteropTestCommon.AssertSuccessOrSkipIfFeatureUnavailable(
                 status,
                 "nc_def_var_filter",
                 InteropTestCommon.FeatureFilters,
-                InteropTestCommon.NcEfilter);
+                NcEfilter);
         }
 
-        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+        Assert.NotEqual(NcNoErr, status);
     }
 }

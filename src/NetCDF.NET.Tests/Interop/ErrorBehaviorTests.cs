@@ -1,5 +1,6 @@
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -9,7 +10,7 @@ public sealed class ErrorBehaviorTests
     public void NcClose_InvalidId_ReturnsError()
     {
         int status = Native.nc_close(-1);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+        Assert.NotEqual(NcNoErr, status);
     }
 
     [Fact]
@@ -18,7 +19,7 @@ public sealed class ErrorBehaviorTests
         using NcTempFile hnd = new();
 
         int status = Native.nc_inq_dimid(hnd.Id, "does_not_exist", out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+        Assert.NotEqual(NcNoErr, status);
     }
 
     [Fact]
@@ -27,7 +28,7 @@ public sealed class ErrorBehaviorTests
         using NcTempFile hnd = new();
 
         int status = Native.nc_inq_varid(hnd.Id, "does_not_exist", out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+        Assert.NotEqual(NcNoErr, status);
     }
 
     [Fact]
@@ -36,7 +37,7 @@ public sealed class ErrorBehaviorTests
         using NcTempFile hnd = new();
 
         int status = Native.nc_inq_vartype(hnd.Id, -1, out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+        Assert.NotEqual(NcNoErr, status);
     }
 
     [Fact]
@@ -45,6 +46,6 @@ public sealed class ErrorBehaviorTests
         using NcTempFile hnd = new();
 
         int status = Native.nc_inq_dimlen(hnd.Id, -1, out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+        Assert.NotEqual(NcNoErr, status);
     }
 }

@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -28,7 +29,7 @@ public sealed class CreateOpenCloseTests
     {
         using var temp = new TempFile();
         int status = Native.nc_open(temp.FilePath, OpenMode.NC_NOWRITE, out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, status);
+        Assert.NotEqual(NcNoErr, status);
     }
 
     [Theory]
@@ -44,7 +45,7 @@ public sealed class CreateOpenCloseTests
                 Native.nc_create(temp.FilePath, format.CreateMode, out ncid),
                 "nc_create",
                 format.FeatureName,
-                InteropTestCommon.NcEinval);
+                NcEinval);
             InteropTestCommon.AssertSuccess(Native.nc_enddef(ncid), "nc_enddef");
             InteropTestCommon.AssertSuccess(Native.nc_sync(ncid), "nc_sync");
             InteropTestCommon.AssertSuccess(Native.nc_close(ncid), "nc_close(create)");
@@ -71,7 +72,7 @@ public sealed class CreateOpenCloseTests
         InteropTestCommon.AssertSuccess(Native.nc_def_dim(hnd.Id, "time", (nuint)3, out int dimId), "nc_def_dim");
         InteropTestCommon.AssertSuccess(Native.nc_def_var(hnd.Id, "values", NCType.NC_INT, 1, [dimId], out int varId), "nc_def_var");
         InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, varId, "units", NCType.NC_INT, 1, [1]), "nc_put_att_int(var)");
-        InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "answer", NCType.NC_INT, 1, [42]), "nc_put_att_int(global)");
+        InteropTestCommon.AssertSuccess(Native.nc_put_att_int(hnd.Id, NcGlobal, "answer", NCType.NC_INT, 1, [42]), "nc_put_att_int(global)");
 
         InteropTestCommon.AssertSuccess(Native.nc_inq(hnd.Id, out int ndims, out int nvars, out int ngatts, out int unlimdimid), "nc_inq");
         Assert.Equal(1, ndims);
@@ -154,7 +155,7 @@ public sealed class CreateOpenCloseTests
         InteropTestCommon.AssertSuccess(Native.nc_abort(ncid), "nc_abort");
 
         int statusAfterAbort = Native.nc_inq_ndims(ncid, out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, statusAfterAbort);
+        Assert.NotEqual(NcNoErr, statusAfterAbort);
     }
 
     [Fact]

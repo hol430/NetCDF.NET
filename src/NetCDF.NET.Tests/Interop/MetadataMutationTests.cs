@@ -1,5 +1,6 @@
 using NetCDF.Interop;
 using NetCDF.Tests.Helpers;
+using static NetCDF.LowLevel.Constants;
 
 namespace NetCDF.Tests.Interop;
 
@@ -18,7 +19,7 @@ public sealed class MetadataMutationTests
         Assert.Equal(dimId, renamedId);
 
         int oldNameStatus = Native.nc_inq_dimid(hnd.Id, "x", out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, oldNameStatus);
+        Assert.NotEqual(NcNoErr, oldNameStatus);
     }
 
     [Fact]
@@ -49,7 +50,7 @@ public sealed class MetadataMutationTests
             Assert.Equal(new[] { 2, 4, 6, 8 }, actual);
 
             int oldNameStatus = Native.nc_inq_varid(hnd.Id, "v", out _);
-            Assert.NotEqual(InteropTestCommon.NcNoErr, oldNameStatus);
+            Assert.NotEqual(NcNoErr, oldNameStatus);
         }
     }
 
@@ -60,25 +61,25 @@ public sealed class MetadataMutationTests
         using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "answer", NCType.NC_INT, 1, [42]),
+            Native.nc_put_att_int(hnd.Id, NcGlobal, "answer", NCType.NC_INT, 1, [42]),
             "nc_put_att_int");
 
         InteropTestCommon.AssertSuccess(
-            Native.nc_rename_att(hnd.Id, InteropTestCommon.NcGlobal, "answer", "answer_renamed"),
+            Native.nc_rename_att(hnd.Id, NcGlobal, "answer", "answer_renamed"),
             "nc_rename_att");
 
         InteropTestCommon.AssertSuccess(
-            Native.nc_inq_attid(hnd.Id, InteropTestCommon.NcGlobal, "answer_renamed", out _),
+            Native.nc_inq_attid(hnd.Id, NcGlobal, "answer_renamed", out _),
             "nc_inq_attid(renamed)");
 
         int[] actual = new int[1];
         InteropTestCommon.AssertSuccess(
-            Native.nc_get_att_int(hnd.Id, InteropTestCommon.NcGlobal, "answer_renamed", actual),
+            Native.nc_get_att_int(hnd.Id, NcGlobal, "answer_renamed", actual),
             "nc_get_att_int(renamed)");
         Assert.Equal(new[] { 42 }, actual);
 
-        int oldNameStatus = Native.nc_inq_attid(hnd.Id, InteropTestCommon.NcGlobal, "answer", out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, oldNameStatus);
+        int oldNameStatus = Native.nc_inq_attid(hnd.Id, NcGlobal, "answer", out _);
+        Assert.NotEqual(NcNoErr, oldNameStatus);
     }
 
     [Fact]
@@ -88,24 +89,24 @@ public sealed class MetadataMutationTests
         using NcFileHandle hnd = NcFileHandle.Create(temp.FilePath, CreateMode.NC_NETCDF4, InteropTestCommon.FeatureNetcdf4);
 
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "a1", NCType.NC_INT, 1, [1]),
+            Native.nc_put_att_int(hnd.Id, NcGlobal, "a1", NCType.NC_INT, 1, [1]),
             "nc_put_att_int(a1)");
         InteropTestCommon.AssertSuccess(
-            Native.nc_put_att_int(hnd.Id, InteropTestCommon.NcGlobal, "a2", NCType.NC_INT, 1, [2]),
+            Native.nc_put_att_int(hnd.Id, NcGlobal, "a2", NCType.NC_INT, 1, [2]),
             "nc_put_att_int(a2)");
 
         InteropTestCommon.AssertSuccess(Native.nc_inq_natts(hnd.Id, out int before), "nc_inq_natts(before)");
         Assert.Equal(2, before);
 
-        InteropTestCommon.AssertSuccess(Native.nc_del_att(hnd.Id, InteropTestCommon.NcGlobal, "a1"), "nc_del_att");
+        InteropTestCommon.AssertSuccess(Native.nc_del_att(hnd.Id, NcGlobal, "a1"), "nc_del_att");
 
         InteropTestCommon.AssertSuccess(Native.nc_inq_natts(hnd.Id, out int after), "nc_inq_natts(after)");
         Assert.Equal(1, after);
 
-        int deletedStatus = Native.nc_inq_attid(hnd.Id, InteropTestCommon.NcGlobal, "a1", out _);
-        Assert.NotEqual(InteropTestCommon.NcNoErr, deletedStatus);
+        int deletedStatus = Native.nc_inq_attid(hnd.Id, NcGlobal, "a1", out _);
+        Assert.NotEqual(NcNoErr, deletedStatus);
 
-        InteropTestCommon.AssertSuccess(Native.nc_inq_attid(hnd.Id, InteropTestCommon.NcGlobal, "a2", out _), "nc_inq_attid(a2)");
+        InteropTestCommon.AssertSuccess(Native.nc_inq_attid(hnd.Id, NcGlobal, "a2", out _), "nc_inq_attid(a2)");
     }
 
     [Fact]
